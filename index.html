@@ -3,24 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Fall Detection Dashboard</title>
-    <!-- Font cao cấp Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>AI Fall Detection | Luxury High-Tech</title>
+    <!-- Font Plus Jakarta Sans cực kỳ sang trọng và hiện đại -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Tông màu Midnight Blue sang trọng */
-            --bg-color: #0b0f19;
-            --card-bg: rgba(30, 41, 59, 0.5);
-            --card-border: rgba(255, 255, 255, 0.08);
+            /* Tông màu Obsidian Black huyền bí */
+            --bg-color: #030712;
+            
+            /* Glassmorphism */
+            --card-bg: rgba(15, 23, 42, 0.4);
+            --card-border: rgba(255, 255, 255, 0.05);
             
             /* Typography */
             --text-main: #f8fafc;
             --text-dim: #94a3b8;
             
-            /* Accent Colors */
-            --accent-blue: #38bdf8;
-            --accent-purple: #a855f7;
+            /* Accent Colors: Xanh hạt lựu chuyển tím Linear */
+            --accent-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            --accent-glow: rgba(59, 130, 246, 0.5);
             --accent-red: #ef4444;
         }
 
@@ -28,71 +30,73 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
             background-color: var(--bg-color);
-            /* Ánh sáng điểm tinh tế đằng sau, loại bỏ hoàn toàn lưới chói mắt */
-            background-image: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.05) 0%, transparent 50%),
-                              radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.05) 0%, transparent 50%);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 2.5rem;
+            padding: 3rem 2rem;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            /* Điểm sáng nền rất mờ ảo, cảm giác sâu thẳm */
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 25%);
         }
 
         header {
             text-align: center;
-            margin-bottom: 3.5rem;
+            margin-bottom: 4rem;
             animation: fadeInDown 1s ease-out;
         }
 
         header h1 {
-            font-size: 2.5rem;
+            font-size: 2.75rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, #94a3b8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
         }
         
         header p {
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             color: var(--text-dim);
             font-weight: 400;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.5px;
         }
 
         .container {
             display: grid;
-            grid-template-columns: 400px 1fr;
+            grid-template-columns: 420px 1fr;
             gap: 2.5rem;
-            max-width: 1400px;
+            max-width: 1440px;
             margin: 0 auto;
             width: 100%;
             flex: 1;
         }
 
-        @media (max-width: 992px) {
+        @media (max-width: 1024px) {
             .container {
                 grid-template-columns: 1fr;
+                gap: 1.5rem;
             }
         }
 
-        /* Glassmorphism Card (Khung kính mờ) */
+        /* Glassmorphism Cards */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 20px;
+            border-radius: 24px;
             padding: 2.5rem;
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
         .controls {
@@ -103,83 +107,53 @@
         }
 
         .card-title {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 600;
             color: var(--text-main);
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
             display: flex;
             align-items: center;
             gap: 12px;
-            letter-spacing: -0.2px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .card-title::before {
             content: '';
             display: block;
-            width: 6px;
-            height: 22px;
-            background: linear-gradient(to bottom, var(--accent-blue), var(--accent-purple));
-            border-radius: 6px;
+            width: 8px;
+            height: 24px;
+            background: var(--accent-gradient);
+            border-radius: 8px;
         }
 
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 0.6rem;
+            gap: 0.75rem;
         }
 
         .form-group label {
             color: var(--text-dim);
             font-size: 0.85rem;
-            font-weight: 500;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: 1px;
         }
 
-        /* Input Wrapper chứa hiệu ứng Gradient Border Highlight */
-        .input-wrapper {
-            position: relative;
-            border-radius: 14px;
-            background: rgba(15, 23, 42, 0.6);
-            padding: 1px;
-            transition: all 0.3s ease;
-        }
-
-        /* Hiệu ứng viền phát sáng chạy vòng quanh */
-        .input-wrapper::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 14px;
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple), var(--accent-blue));
-            background-size: 200% 200%;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .input-wrapper:focus-within::before {
-            opacity: 1;
-            animation: borderGradientMove 3s ease infinite;
-        }
-
-        @keyframes borderGradientMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
+        /* Input / Select / Textarea Luxury Styling */
         input, select, textarea {
             width: 100%;
-            background: #0f172a;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
             color: var(--text-main);
-            padding: 1.1rem 1.2rem;
-            font-size: 0.95rem;
-            border-radius: 13px;
-            transition: all 0.3s ease;
+            padding: 1.25rem 1.2rem;
+            font-size: 1rem;
+            border-radius: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             outline: none;
             appearance: none;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
         }
 
         select {
@@ -192,97 +166,71 @@
         }
 
         select option {
-            background: #0f172a;
+            background: var(--bg-color);
             color: var(--text-main);
         }
 
+        /* Focus Animation cho Form Elements */
         input:focus, select:focus, textarea:focus {
-            background: rgba(15, 23, 42, 0.9);
-            border-color: transparent;
+            background: rgba(255, 255, 255, 0.05);
+            border-color: #8b5cf6;
+            /* Phát sáng lan tỏa chậm giống năng lượng hội tụ */
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15), inset 0 2px 4px rgba(0,0,0,0.2);
         }
         
         textarea {
             resize: vertical;
-            min-height: 110px;
+            min-height: 120px;
         }
 
         input::placeholder, textarea::placeholder {
-            color: rgba(148, 163, 184, 0.5);
+            color: rgba(148, 163, 184, 0.4);
         }
 
-        /* Nút Kích hoạt Premium Glassmorphism */
+        /* Nút Kích hoạt Premium Micro-interactions */
         .btn-activate {
             width: 100%;
-            padding: 1.2rem;
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(168, 85, 247, 0.1));
-            color: var(--text-main);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 14px;
+            padding: 1.25rem;
+            background: var(--accent-gradient);
+            color: #fff;
+            border: none;
+            border-radius: 16px;
             font-size: 1.05rem;
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: 0.5px;
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin-top: 0.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px var(--accent-glow);
+            margin-top: 1rem;
         }
 
-        .btn-activate::before {
+        /* Hiệu ứng Shimmer sweep qua nút */
+        .btn-activate::after {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            z-index: 1;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: skewX(-20deg);
+            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .btn-activate span {
             position: relative;
             z-index: 2;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
         .btn-activate:hover {
-            transform: translateY(-2px); /* Nhấc nhẹ nút lên */
-            border-color: transparent;
-            box-shadow: 0 12px 25px rgba(56, 189, 248, 0.3), 0 0 15px rgba(168, 85, 247, 0.2);
+            transform: translateY(-3px); /* Nhấc nhẹ nút lên cực êm */
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.6), 0 0 10px rgba(59, 130, 246, 0.4);
         }
 
-        .btn-activate:hover::before {
-            opacity: 1;
+        .btn-activate:hover::after {
+            left: 150%;
         }
 
-        /* Status & Uplink Badges */
-        .system-status {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1rem;
-            padding: 1rem 1.2rem;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 14px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            border: 1px solid rgba(255,255,255,0.03);
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--text-dim);
-            transition: all 0.4s ease;
-        }
-
-        /* Monitor Wrapper */
+        /* Monitor Layout */
         .monitor-wrapper {
             animation: fadeInRight 1s ease-out;
             display: flex;
@@ -292,8 +240,8 @@
 
         .monitor-screen {
             flex: 1;
-            background: #020617; /* Sâu hơn card bg */
-            border-radius: 20px;
+            background: #02040a; /* Đen sâu thẳm như màn hình tắt của Apple */
+            border-radius: 24px;
             position: relative;
             overflow: hidden;
             display: flex;
@@ -301,33 +249,33 @@
             align-items: center;
             min-height: 550px;
             padding: 0;
-            box-shadow: inset 0 0 80px rgba(0,0,0,0.5);
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
         }
 
-        /* Đèn Live Badge với hiệu ứng thở (Breathing) */
+        /* Đèn Live Badge với hiệu ứng thở (Breathing) sâu lắng */
         .status-indicator {
             position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
+            top: 2rem;
+            right: 2rem;
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.75rem;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             z-index: 20;
-            background: rgba(15, 23, 42, 0.7);
-            padding: 6px 14px;
+            background: rgba(3, 7, 18, 0.7);
+            padding: 8px 16px;
             border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(8px);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(12px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             opacity: 0;
-            transform: translateY(-15px) scale(0.9);
+            transform: translateY(-20px);
         }
 
         .status-indicator.active {
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: translateY(0);
         }
 
         .led-breath {
@@ -335,21 +283,21 @@
             height: 8px;
             border-radius: 50%;
             background-color: var(--accent-red);
-            /* Hiệu ứng thở phát sáng lan tỏa */
-            animation: breathGlow 2.5s infinite ease-in-out;
+            /* Nhịp thở chậm rãi, sâu lắng */
+            animation: breathGlow 3s infinite ease-in-out;
         }
 
         @keyframes breathGlow {
-            0%, 100% { box-shadow: 0 0 4px rgba(239, 68, 68, 0.5); transform: scale(1); }
-            50% { box-shadow: 0 0 12px rgba(239, 68, 68, 0.9), 0 0 20px rgba(239, 68, 68, 0.4); transform: scale(1.2); }
+            0%, 100% { box-shadow: 0 0 5px rgba(239, 68, 68, 0.4); opacity: 0.5; transform: scale(0.9); }
+            50% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.9), 0 0 30px rgba(239, 68, 68, 0.3); opacity: 1; transform: scale(1.1); }
         }
 
         .status-text {
             color: #fff;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
         }
 
-        /* Thẻ img hiển thị Video với hiệu ứng Scale bung mượt mà */
+        /* Thẻ img hiển thị Video với hiệu ứng Fade-in cực mượt */
         #video-feed {
             width: 100%;
             height: 100%;
@@ -357,16 +305,14 @@
             display: none;
             z-index: 5;
             opacity: 0;
-            transform: scale(0.95);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         #video-feed.playing {
             opacity: 1;
-            transform: scale(1);
         }
 
-        /* Hiệu ứng Shimmer Placeholder nhấp nháy chuyển động sóng mờ */
+        /* Hiệu ứng Glow Pulse / Skeleton Loading cực kỳ công nghệ */
         .placeholder {
             position: absolute;
             inset: 0;
@@ -374,48 +320,57 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(110deg, #0f172a 8%, #1e293b 18%, #0f172a 33%);
-            background-size: 200% 100%;
-            animation: shimmerWave 4s infinite linear;
+            background: rgba(15, 23, 42, 0.2);
             z-index: 1;
-            color: var(--text-dim);
-            transition: opacity 0.6s ease;
+            transition: opacity 0.8s ease;
         }
 
-        @keyframes shimmerWave {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+        /* Luồng sáng quét ngang skeleton */
+        .placeholder::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+            transform: translateX(-100%);
+            animation: skeletonSweep 2.5s infinite;
+        }
+
+        @keyframes skeletonSweep {
+            100% { transform: translateX(100%); }
         }
 
         .placeholder-icon {
-            width: 54px;
-            height: 54px;
+            width: 48px;
+            height: 48px;
             margin-bottom: 1.5rem;
-            stroke: rgba(148, 163, 184, 0.6);
+            stroke: rgba(148, 163, 184, 0.4);
             stroke-width: 1.5;
             fill: none;
-            animation: floating 4s infinite ease-in-out;
+            /* Pulse icon */
+            animation: pulseIcon 3s infinite ease-in-out;
         }
 
-        @keyframes floating {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+        @keyframes pulseIcon {
+            0%, 100% { opacity: 0.4; transform: scale(0.95); }
+            50% { opacity: 0.8; transform: scale(1.05); }
         }
 
         .placeholder h2 {
             font-weight: 500;
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             letter-spacing: 0.5px;
             color: var(--text-main);
+            opacity: 0.9;
         }
 
         .placeholder p {
-            margin-top: 0.5rem;
+            margin-top: 0.75rem;
             font-size: 0.95rem;
-            opacity: 0.6;
+            color: var(--text-dim);
+            opacity: 0.7;
         }
 
-        /* Animations cho Layout */
+        /* Animations cho toàn bộ Layout */
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -435,62 +390,47 @@
 
     <header>
         <h1>AI Fall Detection</h1>
-        <p>Hệ thống giám sát thông minh & Cảnh báo thời gian thực</p>
+        <p>Hệ thống giám sát phân tích thời gian thực</p>
     </header>
 
     <div class="container">
-        <!-- Bảng điều khiển (Control Panel) -->
+        <!-- Bảng điều khiển -->
         <div class="card controls">
             <div class="card-title">Cấu hình Hệ thống</div>
 
             <div class="form-group">
                 <label for="clip-select">Nguồn Video Stream</label>
-                <div class="input-wrapper">
-                    <select id="clip-select">
-                        <option value="" disabled selected>-- Vui lòng chọn nguồn phát --</option>
-                    </select>
-                </div>
+                <select id="clip-select">
+                    <option value="" disabled selected>-- Chọn luồng camera cần giám sát --</option>
+                </select>
             </div>
 
             <div class="form-group">
                 <label for="zalo-receiver">Thông tin nhận cảnh báo (Zalo)</label>
-                <div class="input-wrapper">
-                    <input type="text" id="zalo-receiver" placeholder="Nhập SĐT hoặc tên (VD: 0912345678)">
-                </div>
+                <input type="text" id="zalo-receiver" placeholder="Nhập SĐT hoặc tên người nhận...">
             </div>
 
             <div class="form-group">
                 <label for="zalo-message">Nội dung đính kèm</label>
-                <div class="input-wrapper">
-                    <textarea id="zalo-message" placeholder="Hệ thống phát hiện có người ngã. Vui lòng kiểm tra ngay..."></textarea>
-                </div>
+                <textarea id="zalo-message" placeholder="Hệ thống phát hiện có người ngã. Vui lòng kiểm tra khu vực này..."></textarea>
             </div>
 
             <button class="btn-activate" id="btn-activate">
                 <span>KÍCH HOẠT QUAN SÁT</span>
             </button>
-            
-            <div class="system-status">
-                <div class="status-badge">
-                    <div class="status-dot" id="dot-status"></div>
-                    <span id="sys-status" style="color: var(--text-dim);">Chờ lệnh</span>
-                </div>
-                <div class="status-badge">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-dim); transition: all 0.3s ease;" id="icon-uplink"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
-                    <span id="sys-uplink" style="color: var(--text-dim);">Mất kết nối</span>
-                </div>
-            </div>
         </div>
 
-        <!-- Khung Màn Hình (Monitor Panel) -->
+        <!-- Khung Màn Hình Monitor -->
         <div class="monitor-wrapper">
             <div class="card monitor-screen">
                 
+                <!-- Đèn báo LIVE -->
                 <div class="status-indicator" id="status-indicator">
                     <div class="led-breath"></div>
                     <span class="status-text">LIVE STREAM</span>
                 </div>
 
+                <!-- Glow Pulse / Skeleton Loading Placeholder -->
                 <div class="placeholder" id="placeholder">
                     <svg class="placeholder-icon" viewBox="0 0 24 24">
                         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
@@ -501,7 +441,7 @@
                     <p>Sẵn sàng tiếp nhận luồng video phân tích</p>
                 </div>
 
-                <!-- Thẻ img nhận luồng Stream -->
+                <!-- Luồng Stream -->
                 <img id="video-feed" src="" alt="Live Stream Feed" />
             </div>
         </div>
@@ -511,12 +451,12 @@
         // Cấu hình URL Backend - Giữ nguyên tuyệt đối
         const SERVER_URL = 'https://retirement-charges-stored-debate.trycloudflare.com';
 
-        // 3. Mảng Clip cập nhật chính xác theo yêu cầu
+        // 4. Mảng Clip cập nhật chính xác theo yêu cầu mới nhất
         const AVAILABLE_CLIPS = [
             'clip001.mp4', 
             'clip002.mp4', 
             'clip003.mp4', 
-            'clip005.mp4', 
+            '005', 
             'clip006.mp4', 
             'clip007.mp4', 
             'clip008.mp4', 
@@ -531,10 +471,10 @@
                 const option = document.createElement('option');
                 option.value = clip;
                 
-                // Tách lấy số trong chuỗi clip để làm nhãn hiển thị sang trọng hơn (VD: clip001.mp4 -> Video Test 001)
+                // Tách lấy số trong chuỗi clip để làm nhãn hiển thị sang trọng hơn (Luồng Camera 001)
                 const match = clip.match(/\d+/);
-                const num = match ? match[0] : '';
-                option.textContent = num ? `Video Test ${num}` : clip;
+                const num = match ? match[0].padStart(3, '0') : ''; 
+                option.textContent = num ? `Luồng Camera ${num}` : clip;
                 
                 selectEl.appendChild(option);
             });
@@ -566,34 +506,20 @@
             activateLiveStream(clipName, zaloReceiver, zaloMessage);
         });
 
-        // 4. Giữ nguyên cấu trúc truyền URL, cập nhật hiệu ứng UI mượt mà
+        // 5. Giữ nguyên cấu trúc truyền URL, cập nhật hiệu ứng UI Fade-in
         function activateLiveStream(clipName, receiverName, message) {
-            // Thay đổi trạng thái chữ ở góc dưới trái
-            const sysStatus = document.getElementById('sys-status');
-            const dotStatus = document.getElementById('dot-status');
-            sysStatus.textContent = 'Đang phân tích';
-            sysStatus.style.color = 'var(--text-main)';
-            dotStatus.style.background = 'var(--accent-red)';
-            dotStatus.style.boxShadow = '0 0 10px var(--accent-red)';
-
-            const sysUplink = document.getElementById('sys-uplink');
-            const iconUplink = document.getElementById('icon-uplink');
-            sysUplink.textContent = 'Đã kết nối Uplink';
-            sysUplink.style.color = 'var(--accent-blue)';
-            iconUplink.style.color = 'var(--accent-blue)';
-            
             // Xử lý hiệu ứng tắt Placeholder (Fade out)
             const placeholder = document.getElementById('placeholder');
             placeholder.style.opacity = '0';
             setTimeout(() => {
                 placeholder.style.display = 'none';
-            }, 600);
+            }, 800);
             
-            // Hiện LED Live Badge thở mượt mà
+            // Hiện LED Live Badge thở sâu lắng
             const indicator = document.getElementById('status-indicator');
             indicator.classList.add('active');
 
-            // Gắn src và tạo hiệu ứng Scale / Fade in cho màn hình Live
+            // Gắn src và tạo hiệu ứng Fade in mượt mà cho màn hình Live
             const videoFeed = document.getElementById('video-feed');
             
             // --- LOGIC BACKEND GIỮ NGUYÊN HOÀN TOÀN ---
@@ -602,7 +528,7 @@
             videoFeed.src = streamUrl;
             videoFeed.style.display = 'block';
             
-            // Đợi một chút để CSS áp dụng display: block, sau đó mới kích hoạt class animation
+            // Kích hoạt class animation
             setTimeout(() => {
                 videoFeed.classList.add('playing');
             }, 50);
