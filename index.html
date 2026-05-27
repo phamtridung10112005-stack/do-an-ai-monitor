@@ -3,87 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Fall Detection Monitor</title>
-    <!-- Font phong cách công nghệ / Sci-fi -->
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>AI Fall Detection Dashboard</title>
+    <!-- Font cao cấp Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --neon-green: #00ffcc;
-            --neon-green-dim: rgba(0, 255, 204, 0.3);
-            --neon-red: #ff0055;
-            --bg-color: #030a0d;
-            --panel-bg: rgba(0, 20, 20, 0.6);
-            --border-glow: 0 0 15px rgba(0, 255, 204, 0.4);
-            --text-glow: 0 0 8px rgba(0, 255, 204, 0.8);
+            /* Tông màu Midnight Blue sang trọng */
+            --bg-color: #0b0f19;
+            --card-bg: rgba(30, 41, 59, 0.5);
+            --card-border: rgba(255, 255, 255, 0.08);
+            
+            /* Typography */
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            
+            /* Accent Colors */
+            --accent-blue: #38bdf8;
+            --accent-purple: #a855f7;
+            --accent-red: #ef4444;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Share Tech Mono', monospace;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
             background-color: var(--bg-color);
-            /* Nền lưới ma trận chìm */
-            background-image: 
-                linear-gradient(rgba(0, 255, 204, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 204, 0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
-            color: var(--neon-green);
+            /* Ánh sáng điểm tinh tế đằng sau, loại bỏ hoàn toàn lưới chói mắt */
+            background-image: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.05) 0%, transparent 50%),
+                              radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.05) 0%, transparent 50%);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 2rem;
+            padding: 2.5rem;
             overflow-x: hidden;
-        }
-
-        /* Hiệu ứng Scanline sọc ngang toàn màn hình */
-        body::after {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.15),
-                rgba(0, 0, 0, 0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            pointer-events: none;
-            z-index: 9999;
+            -webkit-font-smoothing: antialiased;
         }
 
         header {
             text-align: center;
-            margin-bottom: 2rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: var(--text-glow);
+            margin-bottom: 3.5rem;
+            animation: fadeInDown 1s ease-out;
         }
 
         header h1 {
-            font-size: 2.8rem;
+            font-size: 2.5rem;
+            font-weight: 700;
             margin-bottom: 0.5rem;
-            color: #fff;
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
         }
         
         header p {
-            font-size: 1rem;
-            opacity: 0.8;
+            font-size: 1.05rem;
+            color: var(--text-dim);
+            font-weight: 400;
+            letter-spacing: 0.2px;
         }
 
-        /* Bố cục chia 2 cột */
         .container {
             display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 2rem;
-            max-width: 1500px;
+            grid-template-columns: 400px 1fr;
+            gap: 2.5rem;
+            max-width: 1400px;
             margin: 0 auto;
             width: 100%;
             flex: 1;
@@ -95,126 +84,207 @@
             }
         }
 
-        /* Style chung cho khung Control và Monitor */
+        /* Glassmorphism Card (Khung kính mờ) */
         .card {
-            background: var(--panel-bg);
-            border: 1px solid var(--neon-green);
-            border-radius: 4px;
-            padding: 1.5rem;
-            box-shadow: var(--border-glow);
-            position: relative;
-            backdrop-filter: blur(5px);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
         }
 
-        /* Viền sáng chạy vòng quanh Card */
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            background: linear-gradient(45deg, transparent 40%, rgba(0, 255, 204, 0.8) 50%, transparent 60%);
-            background-size: 200% 200%;
-            animation: borderShine 4s linear infinite;
-            pointer-events: none;
-            border-radius: 4px;
-            z-index: -1;
-        }
-
-        @keyframes borderShine {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+        .controls {
+            animation: fadeInLeft 1s ease-out;
+            display: flex;
+            flex-direction: column;
+            gap: 1.8rem;
         }
 
         .card-title {
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--neon-green-dim);
-            padding-bottom: 0.5rem;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 12px;
+            letter-spacing: -0.2px;
+        }
+
+        .card-title::before {
+            content: '';
+            display: block;
+            width: 6px;
+            height: 22px;
+            background: linear-gradient(to bottom, var(--accent-blue), var(--accent-purple));
+            border-radius: 6px;
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
         }
 
         .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #88ffcc;
-            font-size: 0.95rem;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        /* Input Wrapper chứa hiệu ứng Gradient Border Highlight */
+        .input-wrapper {
+            position: relative;
+            border-radius: 14px;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 1px;
+            transition: all 0.3s ease;
+        }
+
+        /* Hiệu ứng viền phát sáng chạy vòng quanh */
+        .input-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple), var(--accent-blue));
+            background-size: 200% 200%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .input-wrapper:focus-within::before {
+            opacity: 1;
+            animation: borderGradientMove 3s ease infinite;
+        }
+
+        @keyframes borderGradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         input, select, textarea {
             width: 100%;
-            background: rgba(0, 20, 20, 0.8);
-            border: 1px solid var(--neon-green-dim);
-            color: var(--neon-green);
-            padding: 0.8rem;
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 1rem;
-            border-radius: 2px;
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            padding: 1.1rem 1.2rem;
+            font-size: 0.95rem;
+            border-radius: 13px;
             transition: all 0.3s ease;
             outline: none;
+            appearance: none;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1.2rem center;
+            background-size: 1.2em;
+            padding-right: 3rem;
+            cursor: pointer;
+        }
+
+        select option {
+            background: #0f172a;
+            color: var(--text-main);
         }
 
         input:focus, select:focus, textarea:focus {
-            border-color: var(--neon-green);
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.3) inset, 0 0 5px rgba(0, 255, 204, 0.5);
+            background: rgba(15, 23, 42, 0.9);
+            border-color: transparent;
         }
         
         textarea {
             resize: vertical;
-            min-height: 80px;
+            min-height: 110px;
         }
 
-        option {
-            background: #021a20;
-            color: var(--neon-green);
+        input::placeholder, textarea::placeholder {
+            color: rgba(148, 163, 184, 0.5);
         }
 
-        /* Nút bấm siêu nổi bật */
+        /* Nút Kích hoạt Premium Glassmorphism */
         .btn-activate {
             width: 100%;
             padding: 1.2rem;
-            background: rgba(0, 255, 204, 0.05);
-            color: var(--neon-green);
-            border: 2px solid var(--neon-green);
-            font-size: 1.2rem;
-            font-weight: bold;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(168, 85, 247, 0.1));
+            color: var(--text-main);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 600;
             cursor: pointer;
-            text-transform: uppercase;
             position: relative;
             overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: inset 0 0 10px rgba(0, 255, 204, 0.1), 0 0 15px rgba(0, 255, 204, 0.2);
-            margin-top: 1rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 0.5rem;
         }
 
-        .btn-activate:hover {
-            background: var(--neon-green);
-            color: var(--bg-color);
-            box-shadow: 0 0 25px var(--neon-green);
-            text-shadow: none;
-        }
-
-        /* Hiệu ứng quét sáng khi hover nút */
         .btn-activate::before {
             content: '';
             position: absolute;
-            top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
-            transition: all 0.5s ease;
-            transform: skewX(-20deg);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 1;
+        }
+
+        .btn-activate span {
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .btn-activate:hover {
+            transform: translateY(-2px); /* Nhấc nhẹ nút lên */
+            border-color: transparent;
+            box-shadow: 0 12px 25px rgba(56, 189, 248, 0.3), 0 0 15px rgba(168, 85, 247, 0.2);
         }
 
         .btn-activate:hover::before {
-            left: 150%;
-            transition: all 0.7s ease;
+            opacity: 1;
         }
 
-        /* Khung hiển thị Video/Monitor */
+        /* Status & Uplink Badges */
+        .system-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding: 1rem 1.2rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 14px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-dim);
+            transition: all 0.4s ease;
+        }
+
+        /* Monitor Wrapper */
         .monitor-wrapper {
+            animation: fadeInRight 1s ease-out;
             display: flex;
             flex-direction: column;
             height: 100%;
@@ -222,339 +292,266 @@
 
         .monitor-screen {
             flex: 1;
-            background: #000;
-            border: 2px solid var(--neon-green-dim);
-            border-radius: 4px;
+            background: #020617; /* Sâu hơn card bg */
+            border-radius: 20px;
             position: relative;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 450px;
+            min-height: 550px;
+            padding: 0;
+            box-shadow: inset 0 0 80px rgba(0,0,0,0.5);
         }
 
-        /* Bóng mờ góc màn hình */
-        .monitor-screen::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            box-shadow: inset 0 0 60px rgba(0,255,204,0.15);
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        /* Đèn LED nhấp nháy góc phải */
+        /* Đèn Live Badge với hiệu ứng thở (Breathing) */
         .status-indicator {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 1.5rem;
+            right: 1.5rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-weight: bold;
+            gap: 0.6rem;
+            font-weight: 600;
+            font-size: 0.85rem;
             z-index: 20;
-            background: rgba(0,0,0,0.7);
-            padding: 6px 12px;
-            border-radius: 4px;
-            border: 1px solid var(--neon-green-dim);
+            background: rgba(15, 23, 42, 0.7);
+            padding: 6px 14px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(-15px) scale(0.9);
         }
 
-        .led {
-            width: 14px;
-            height: 14px;
+        .status-indicator.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .led-breath {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            background-color: #333;
-            box-shadow: inset 0 0 5px #000;
+            background-color: var(--accent-red);
+            /* Hiệu ứng thở phát sáng lan tỏa */
+            animation: breathGlow 2.5s infinite ease-in-out;
         }
 
-        .led.active {
-            background-color: var(--neon-red);
-            box-shadow: 0 0 10px var(--neon-red), 0 0 20px var(--neon-red);
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+        @keyframes breathGlow {
+            0%, 100% { box-shadow: 0 0 4px rgba(239, 68, 68, 0.5); transform: scale(1); }
+            50% { box-shadow: 0 0 12px rgba(239, 68, 68, 0.9), 0 0 20px rgba(239, 68, 68, 0.4); transform: scale(1.2); }
         }
 
         .status-text {
-            color: #555;
+            color: #fff;
             letter-spacing: 1px;
         }
 
-        .status-text.active {
-            color: var(--neon-red);
-            text-shadow: 0 0 8px var(--neon-red);
-        }
-
-        /* Thẻ img hiển thị luồng MJPEG */
+        /* Thẻ img hiển thị Video với hiệu ứng Scale bung mượt mà */
         #video-feed {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Giữ tỷ lệ khung hình video */
+            object-fit: contain;
             display: none;
             z-index: 5;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Placeholder khi chưa phát */
+        #video-feed.playing {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Hiệu ứng Shimmer Placeholder nhấp nháy chuyển động sóng mờ */
         .placeholder {
             position: absolute;
-            text-align: center;
-            color: var(--neon-green-dim);
-            z-index: 1;
+            inset: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            background: linear-gradient(110deg, #0f172a 8%, #1e293b 18%, #0f172a 33%);
+            background-size: 200% 100%;
+            animation: shimmerWave 4s infinite linear;
+            z-index: 1;
+            color: var(--text-dim);
+            transition: opacity 0.6s ease;
         }
 
-        .placeholder svg {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 1rem;
-            fill: var(--neon-green-dim);
-            filter: drop-shadow(0 0 5px rgba(0,255,204,0.2));
+        @keyframes shimmerWave {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
-        
+
+        .placeholder-icon {
+            width: 54px;
+            height: 54px;
+            margin-bottom: 1.5rem;
+            stroke: rgba(148, 163, 184, 0.6);
+            stroke-width: 1.5;
+            fill: none;
+            animation: floating 4s infinite ease-in-out;
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
         .placeholder h2 {
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-size: 1.5rem;
+            font-weight: 500;
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
+            color: var(--text-main);
         }
 
-        /* Thanh equalizer trang trí góc trái */
-        .decorative-bars {
-            position: absolute;
-            bottom: 15px;
-            left: 15px;
-            display: flex;
-            gap: 4px;
-            z-index: 20;
-            align-items: flex-end;
-            height: 30px;
+        .placeholder p {
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+            opacity: 0.6;
         }
 
-        .bar {
-            width: 10px;
-            height: 8px;
-            background: var(--neon-green-dim);
-            transition: height 0.2s ease;
+        /* Animations cho Layout */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
-        .bar.active {
-            background: var(--neon-green);
-            box-shadow: 0 0 8px var(--neon-green);
-        }
-
-        /* Dấu ngắm (Crosshairs) ở 4 góc màn hình monitor */
-        .crosshair { position: absolute; width: 20px; height: 20px; border: 2px solid var(--neon-green); opacity: 0.6; z-index: 20; }
-        .ch-tl { top: 10px; left: 10px; border-bottom: none; border-right: none; }
-        .ch-tr { top: 10px; right: 10px; border-bottom: none; border-left: none; }
-        .ch-bl { bottom: 10px; left: 10px; border-top: none; border-right: none; }
-        .ch-br { bottom: 10px; right: 10px; border-top: none; border-left: none; }
-
-        /* Hiệu ứng Glitch cho Tiêu đề Header */
-        .glitch {
-            position: relative;
-        }
-        
-        .glitch::before, .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-color);
-        }
-        
-        .glitch::before {
-            left: 2px;
-            text-shadow: -2px 0 var(--neon-red);
-            clip: rect(24px, 550px, 90px, 0);
-            animation: glitch-anim-2 3s infinite linear alternate-reverse;
-        }
-        
-        .glitch::after {
-            left: -2px;
-            text-shadow: -2px 0 #0055ff;
-            clip: rect(85px, 550px, 140px, 0);
-            animation: glitch-anim 2.5s infinite linear alternate-reverse;
-        }
-        
-        @keyframes glitch-anim {
-            0% { clip: rect(10px, 9999px, 86px, 0); }
-            5% { clip: rect(83px, 9999px, 19px, 0); }
-            10% { clip: rect(11px, 9999px, 44px, 0); }
-            15% { clip: rect(54px, 9999px, 20px, 0); }
-            20% { clip: rect(13px, 9999px, 55px, 0); }
-            25% { clip: rect(69px, 9999px, 11px, 0); }
-            30% { clip: rect(31px, 9999px, 78px, 0); }
-            35% { clip: rect(89px, 9999px, 32px, 0); }
-            40% { clip: rect(14px, 9999px, 60px, 0); }
-            45% { clip: rect(74px, 9999px, 89px, 0); }
-            50% { clip: rect(22px, 9999px, 51px, 0); }
-            55% { clip: rect(48px, 9999px, 15px, 0); }
-            60% { clip: rect(98px, 9999px, 40px, 0); }
-            65% { clip: rect(33px, 9999px, 83px, 0); }
-            70% { clip: rect(61px, 9999px, 25px, 0); }
-            75% { clip: rect(17px, 9999px, 72px, 0); }
-            80% { clip: rect(85px, 9999px, 95px, 0); }
-            85% { clip: rect(41px, 9999px, 8px, 0); }
-            90% { clip: rect(59px, 9999px, 63px, 0); }
-            95% { clip: rect(7px, 9999px, 91px, 0); }
-            100% { clip: rect(93px, 9999px, 37px, 0); }
-        }
-        
-        @keyframes glitch-anim-2 {
-            0% { clip: rect(65px, 9999px, 100px, 0); }
-            5% { clip: rect(52px, 9999px, 74px, 0); }
-            10% { clip: rect(79px, 9999px, 85px, 0); }
-            15% { clip: rect(75px, 9999px, 5px, 0); }
-            20% { clip: rect(67px, 9999px, 61px, 0); }
-            25% { clip: rect(14px, 9999px, 79px, 0); }
-            30% { clip: rect(1px, 9999px, 66px, 0); }
-            35% { clip: rect(86px, 9999px, 30px, 0); }
-            40% { clip: rect(23px, 9999px, 98px, 0); }
-            45% { clip: rect(85px, 9999px, 72px, 0); }
-            50% { clip: rect(71px, 9999px, 75px, 0); }
-            55% { clip: rect(2px, 9999px, 48px, 0); }
-            60% { clip: rect(30px, 9999px, 16px, 0); }
-            65% { clip: rect(59px, 9999px, 50px, 0); }
-            70% { clip: rect(41px, 9999px, 62px, 0); }
-            75% { clip: rect(2px, 9999px, 82px, 0); }
-            80% { clip: rect(47px, 9999px, 73px, 0); }
-            85% { clip: rect(3px, 9999px, 27px, 0); }
-            90% { clip: rect(26px, 9999px, 55px, 0); }
-            95% { clip: rect(42px, 9999px, 97px, 0); }
-            100% { clip: rect(38px, 9999px, 49px, 0); }
-        }
     </style>
 </head>
 <body>
 
     <header>
-        <h1 class="glitch" data-text="AI FALL DETECTION">AI FALL DETECTION</h1>
-        <p>SYSTEM MONITORING & ALERT TERMINAL</p>
+        <h1>AI Fall Detection</h1>
+        <p>Hệ thống giám sát thông minh & Cảnh báo thời gian thực</p>
     </header>
 
     <div class="container">
-        <!-- Control Panel -->
+        <!-- Bảng điều khiển (Control Panel) -->
         <div class="card controls">
-            <div class="card-title">
-                <span>// CONTROL_PANEL</span>
-                <span style="font-size: 0.8rem; opacity: 0.5;">v2.0.4</span>
-            </div>
+            <div class="card-title">Cấu hình Hệ thống</div>
 
-            <!-- Yêu cầu 2: Dropdown Menu chọn Clip -->
             <div class="form-group">
-                <label for="clip-select">> SELECT_VIDEO_SOURCE</label>
-                <select id="clip-select">
-                    <option value="" disabled selected>-- Chọn luồng video --</option>
-                    <!-- Thẻ <option> sẽ được đổ tự động từ mảng JS -->
-                </select>
+                <label for="clip-select">Nguồn Video Stream</label>
+                <div class="input-wrapper">
+                    <select id="clip-select">
+                        <option value="" disabled selected>-- Vui lòng chọn nguồn phát --</option>
+                    </select>
+                </div>
             </div>
 
-            <!-- Yêu cầu 3: Tên/SĐT Zalo -->
             <div class="form-group">
-                <label for="zalo-receiver">> ZALO_RECEIVER (Tên/SĐT người nhận)</label>
-                <input type="text" id="zalo-receiver" placeholder="Ví dụ: 0912345678 hoặc Nguyễn Văn A...">
+                <label for="zalo-receiver">Thông tin nhận cảnh báo (Zalo)</label>
+                <div class="input-wrapper">
+                    <input type="text" id="zalo-receiver" placeholder="Nhập SĐT hoặc tên (VD: 0912345678)">
+                </div>
             </div>
 
-            <!-- Yêu cầu 3: Nội dung lời nhắn -->
             <div class="form-group">
-                <label for="zalo-message">> ALERT_MESSAGE (Nội dung cảnh báo)</label>
-                <textarea id="zalo-message" placeholder="Cảnh báo: Phát hiện người ngã tại khu vực..."></textarea>
+                <label for="zalo-message">Nội dung đính kèm</label>
+                <div class="input-wrapper">
+                    <textarea id="zalo-message" placeholder="Hệ thống phát hiện có người ngã. Vui lòng kiểm tra ngay..."></textarea>
+                </div>
             </div>
 
-            <!-- Yêu cầu 5: Nút Kích hoạt -->
             <button class="btn-activate" id="btn-activate">
-                Kích hoạt hệ thống & Xem Live
+                <span>KÍCH HOẠT QUAN SÁT</span>
             </button>
             
-            <div style="margin-top: 1.5rem; font-size: 0.85rem; color: #88ffcc; opacity: 0.7; font-family: monospace;">
-                > STATUS: <span id="sys-status">IDLE / WAITING INPUT</span><br>
-                > UPLINK: <span id="sys-uplink">OFFLINE</span>
+            <div class="system-status">
+                <div class="status-badge">
+                    <div class="status-dot" id="dot-status"></div>
+                    <span id="sys-status" style="color: var(--text-dim);">Chờ lệnh</span>
+                </div>
+                <div class="status-badge">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-dim); transition: all 0.3s ease;" id="icon-uplink"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+                    <span id="sys-uplink" style="color: var(--text-dim);">Mất kết nối</span>
+                </div>
             </div>
         </div>
 
-        <!-- Yêu cầu 4: Monitor Panel -->
+        <!-- Khung Màn Hình (Monitor Panel) -->
         <div class="monitor-wrapper">
             <div class="card monitor-screen">
                 
-                <!-- Đèn LED REC/LIVE -->
-                <div class="status-indicator">
-                    <div class="led" id="led-indicator"></div>
-                    <span class="status-text" id="status-text">READY</span>
+                <div class="status-indicator" id="status-indicator">
+                    <div class="led-breath"></div>
+                    <span class="status-text">LIVE STREAM</span>
                 </div>
 
-                <!-- Chữ Sẵn Sàng ban đầu -->
                 <div class="placeholder" id="placeholder">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z" />
+                    <svg class="placeholder-icon" viewBox="0 0 24 24">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
                     </svg>
-                    <h2>HỆ THỐNG SẴN SÀNG</h2>
-                    <p style="font-size: 0.95rem; margin-top: 0.5rem; opacity: 0.8;">Chờ lệnh kích hoạt luồng camera...</p>
+                    <h2>Màn Hình Chờ</h2>
+                    <p>Sẵn sàng tiếp nhận luồng video phân tích</p>
                 </div>
 
-                <!-- Thẻ img dùng để hứng luồng Stream MJPEG từ server -->
+                <!-- Thẻ img nhận luồng Stream -->
                 <img id="video-feed" src="" alt="Live Stream Feed" />
-
-                <!-- Các thanh nhấp nháy mô phỏng tín hiệu Data -->
-                <div class="decorative-bars">
-                    <div class="bar active" style="height: 15px;"></div>
-                    <div class="bar active" style="height: 25px;"></div>
-                    <div class="bar" style="height: 10px;"></div>
-                    <div class="bar" style="height: 20px;"></div>
-                    <div class="bar" style="height: 8px;"></div>
-                </div>
-                
-                <!-- Góc ngắm Camera -->
-                <div class="crosshair ch-tl"></div>
-                <div class="crosshair ch-tr"></div>
-                <div class="crosshair ch-bl"></div>
-                <div class="crosshair ch-br"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // Cấu hình URL Backend - Đã trỏ tới Cloudflare Tunnel
+        // Cấu hình URL Backend - Giữ nguyên tuyệt đối
         const SERVER_URL = 'https://retirement-charges-stored-debate.trycloudflare.com';
 
-        // 1. Khởi tạo danh sách Clip (Mảng Placeholder để bạn tự thêm bớt dữ liệu)
+        // 3. Mảng Clip cập nhật chính xác theo yêu cầu
         const AVAILABLE_CLIPS = [
-            'clip001.mp4',
-            'clip002.mp4',
-            '005',
-            'camera_hallway_01.mp4',
-            'fall_simulation.avi'
+            'clip001.mp4', 
+            'clip002.mp4', 
+            'clip003.mp4', 
+            'clip005.mp4', 
+            'clip006.mp4', 
+            'clip007.mp4', 
+            'clip008.mp4', 
+            'clip009.mp4', 
+            'clip100.mp4'
         ];
 
-        // Hàm đưa các clip vào thẻ Select
+        // Đổ dữ liệu vào Dropdown
         function initClipDropdown() {
             const selectEl = document.getElementById('clip-select');
             AVAILABLE_CLIPS.forEach(clip => {
                 const option = document.createElement('option');
                 option.value = clip;
-                option.textContent = `> ${clip}`;
+                
+                // Tách lấy số trong chuỗi clip để làm nhãn hiển thị sang trọng hơn (VD: clip001.mp4 -> Video Test 001)
+                const match = clip.match(/\d+/);
+                const num = match ? match[0] : '';
+                option.textContent = num ? `Video Test ${num}` : clip;
+                
                 selectEl.appendChild(option);
             });
         }
 
-        // 2. Xử lý sự kiện khi bấm nút Kích Hoạt
+        // Bắt sự kiện Click nút Kích hoạt
         document.getElementById('btn-activate').addEventListener('click', function() {
             const clipName = document.getElementById('clip-select').value;
             const zaloReceiver = document.getElementById('zalo-receiver').value.trim();
             const zaloMessage = document.getElementById('zalo-message').value.trim();
 
             if (!clipName) {
-                alert('[LỖI HỆ THỐNG] Vui lòng chọn một luồng video (video source) trước khi kích hoạt!');
+                alert('Vui lòng chọn Video Source để bắt đầu phân tích!');
                 return;
             }
 
-            // --- YÊU CẦU 3: LOG RA CONSOLE OBJECT JSON CHO BACKEND ---
-            // Bạn có thể bắt Object này để dùng cho tính năng Fetch API gửi Zalo sau này
+            // Object in ra console theo đúng logic cũ
             const requestData = {
                 tên_clip: clipName,
                 người_nhận: zaloReceiver,
@@ -565,54 +562,53 @@
             console.log(JSON.stringify(requestData, null, 2));
             console.log('==========================================');
 
-            // --- YÊU CẦU 4 & TÍCH HỢP LUỒNG VIDEO TỪ BACKEND CŨ ---
+            // Gọi hàm logic stream
             activateLiveStream(clipName, zaloReceiver, zaloMessage);
         });
 
-        // Hàm thay đổi Giao diện và Hiện Video Stream
+        // 4. Giữ nguyên cấu trúc truyền URL, cập nhật hiệu ứng UI mượt mà
         function activateLiveStream(clipName, receiverName, message) {
-            // Cập nhật text trạng thái trên Control Panel
+            // Thay đổi trạng thái chữ ở góc dưới trái
             const sysStatus = document.getElementById('sys-status');
-            sysStatus.textContent = 'ACTIVE / STREAMING';
-            sysStatus.style.color = 'var(--neon-red)';
-            document.getElementById('sys-uplink').textContent = 'CONNECTED';
-            document.getElementById('sys-uplink').style.color = 'var(--neon-green)';
-            
-            // Ẩn placeholder Sẵn Sàng
-            document.getElementById('placeholder').style.display = 'none';
-            
-            // Bật LED đỏ và chữ REC / LIVE
-            const led = document.getElementById('led-indicator');
-            const statusText = document.getElementById('status-text');
-            led.classList.add('active');
-            statusText.classList.add('active');
-            statusText.textContent = 'REC / LIVE';
+            const dotStatus = document.getElementById('dot-status');
+            sysStatus.textContent = 'Đang phân tích';
+            sysStatus.style.color = 'var(--text-main)';
+            dotStatus.style.background = 'var(--accent-red)';
+            dotStatus.style.boxShadow = '0 0 10px var(--accent-red)';
 
-            // Gán Source cho thẻ <img> để bắt đầu hứng luồng MJPEG
+            const sysUplink = document.getElementById('sys-uplink');
+            const iconUplink = document.getElementById('icon-uplink');
+            sysUplink.textContent = 'Đã kết nối Uplink';
+            sysUplink.style.color = 'var(--accent-blue)';
+            iconUplink.style.color = 'var(--accent-blue)';
+            
+            // Xử lý hiệu ứng tắt Placeholder (Fade out)
+            const placeholder = document.getElementById('placeholder');
+            placeholder.style.opacity = '0';
+            setTimeout(() => {
+                placeholder.style.display = 'none';
+            }, 600);
+            
+            // Hiện LED Live Badge thở mượt mà
+            const indicator = document.getElementById('status-indicator');
+            indicator.classList.add('active');
+
+            // Gắn src và tạo hiệu ứng Scale / Fade in cho màn hình Live
             const videoFeed = document.getElementById('video-feed');
             
-            // Dùng timestamp ở tham số phụ (_t) để tránh trình duyệt cache luồng Stream
+            // --- LOGIC BACKEND GIỮ NGUYÊN HOÀN TOÀN ---
             const streamUrl = `${SERVER_URL}/video-feed?clip=${encodeURIComponent(clipName)}&name=${encodeURIComponent(receiverName)}&msg=${encodeURIComponent(message)}&_t=${new Date().getTime()}`;
             
             videoFeed.src = streamUrl;
             videoFeed.style.display = 'block';
-
-            // Kích hoạt hiệu ứng Data equalizer góc trái
-            setInterval(() => {
-                const bars = document.querySelectorAll('.bar');
-                bars.forEach(bar => {
-                    // Random độ cao thanh và class active
-                    bar.style.height = `${Math.floor(Math.random() * 25) + 5}px`;
-                    if(Math.random() > 0.4) {
-                        bar.classList.add('active');
-                    } else {
-                        bar.classList.remove('active');
-                    }
-                });
-            }, 150); // Cập nhật siêu nhanh giống đang truyền dữ liệu
+            
+            // Đợi một chút để CSS áp dụng display: block, sau đó mới kích hoạt class animation
+            setTimeout(() => {
+                videoFeed.classList.add('playing');
+            }, 50);
         }
 
-        // Khởi chạy khi tải xong trang
+        // Tự động nạp Dropdown khi trang vừa mở
         window.addEventListener('DOMContentLoaded', () => {
             initClipDropdown();
         });
