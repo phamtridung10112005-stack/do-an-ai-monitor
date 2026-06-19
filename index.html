@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Fall Detection | Luxury High-Tech</title>
-    <!-- Font Plus Jakarta Sans cực kỳ sang trọng và hiện đại -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -394,20 +393,19 @@
     </header>
 
     <div class="container">
-        <!-- Bảng điều khiển -->
         <div class="card controls">
             <div class="card-title">Cấu hình Hệ thống</div>
 
             <div class="form-group">
                 <label for="clip-select">Nguồn Video Stream</label>
                 <select id="clip-select">
-                    <option value="" disabled selected>-- Chọn luồng camera cần giám sát --</option>
+                    <option value="" disabled>-- Chọn luồng camera cần giám sát --</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="zalo-receiver">Thông tin nhận cảnh báo (Zalo)</label>
-                <input type="text" id="zalo-receiver" placeholder="Nhập SĐT hoặc tên người nhận...">
+                <input type="text" id="zalo-receiver" placeholder="Nhập tên người nhận (Mặc định: Kiệt Tày)...">
             </div>
 
             <div class="form-group">
@@ -420,17 +418,14 @@
             </button>
         </div>
 
-        <!-- Khung Màn Hình Monitor -->
         <div class="monitor-wrapper">
             <div class="card monitor-screen">
                 
-                <!-- Đèn báo LIVE -->
                 <div class="status-indicator" id="status-indicator">
                     <div class="led-breath"></div>
                     <span class="status-text">LIVE STREAM</span>
                 </div>
 
-                <!-- Glow Pulse / Skeleton Loading Placeholder -->
                 <div class="placeholder" id="placeholder">
                     <svg class="placeholder-icon" viewBox="0 0 24 24">
                         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
@@ -441,59 +436,57 @@
                     <p>Sẵn sàng tiếp nhận luồng video phân tích</p>
                 </div>
 
-                <!-- Luồng Stream -->
                 <img id="video-feed" src="" alt="Live Stream Feed" />
             </div>
         </div>
     </div>
 
     <script>
-        // Cấu hình URL Backend - Giữ nguyên tuyệt đối
-        
+        // 1. Cấu hình URL Backend - Đã cập nhật theo tunnel Cloudflare mới nhất của bạn
         const SERVER_URL = 'https://pipeline-arguments-controversial-joel.trycloudflare.com';
-        // 4. Mảng Clip cập nhật chính xác theo yêu cầu mới nhất
+        
+        // 2. Chuyển sang 1 luồng duy nhất đại diện cho Camera thật góc rộng thay vì danh sách clip cũ
         const AVAILABLE_CLIPS = [
-            'clip001.mp4', 
-            'clip002.mp4', 
-            'clip003.mp4', 
-            '005', 
-            'clip006.mp4', 
-            'clip007.mp4', 
-            'clip008.mp4', 
-            'clip009.mp4', 
-            'clip100.mp4'
+            'ezviz_live_sub'
         ];
 
-        // Đổ dữ liệu vào Dropdown
+        // Đổ dữ liệu vào Dropdown và TỰ ĐỘNG CHỌN luồng live camera
         function initClipDropdown() {
             const selectEl = document.getElementById('clip-select');
             AVAILABLE_CLIPS.forEach(clip => {
                 const option = document.createElement('option');
                 option.value = clip;
-                
-                // Tách lấy số trong chuỗi clip để làm nhãn hiển thị sang trọng hơn (Luồng Camera 001)
-                const match = clip.match(/\d+/);
-                const num = match ? match[0].padStart(3, '0') : ''; 
-                option.textContent = num ? `Luồng Camera ${num}` : clip;
-                
+                option.textContent = "Camera Ezviz - Toàn Cảnh Phòng Ăn (LIVE)";
                 selectEl.appendChild(option);
             });
+            
+            // Tự động chọn luôn dòng camera live để trải nghiệm mượt mà nhất
+            selectEl.value = AVAILABLE_CLIPS[0];
         }
 
         // Bắt sự kiện Click nút Kích hoạt
         document.getElementById('btn-activate').addEventListener('click', function() {
             const clipName = document.getElementById('clip-select').value;
-            const zaloReceiver = document.getElementById('zalo-receiver').value.trim();
-            const zaloMessage = document.getElementById('zalo-message').value.trim();
+            
+            // CHỐNG CRASH BACKEND: Nếu ô nhập bị bỏ trống, tự điền giá trị mặc định chuẩn để đồng bộ hệ thống
+            let zaloReceiver = document.getElementById('zalo-receiver').value.trim();
+            if (!zaloReceiver) {
+                zaloReceiver = "Kiệt Tày";
+            }
+
+            let zaloMessage = document.getElementById('zalo-message').value.trim();
+            if (!zaloMessage) {
+                zaloMessage = "Phát hiện người bị ngã!";
+            }
 
             if (!clipName) {
-                alert('Vui lòng chọn Video Source để bắt đầu phân tích!');
+                alert('Vui lòng chọn Nguồn Camera để bắt đầu phân tích!');
                 return;
             }
 
-            // Object in ra console theo đúng logic cũ
+            // In log kiểm tra dữ liệu sạch ra Console
             const requestData = {
-                tên_clip: clipName,
+                nguồn_cam: clipName,
                 người_nhận: zaloReceiver,
                 lời_nhắn: zaloMessage
             };
@@ -502,39 +495,37 @@
             console.log(JSON.stringify(requestData, null, 2));
             console.log('==========================================');
 
-            // Gọi hàm logic stream
-            activateLiveStream(clipName, zaloReceiver, zaloMessage);
+            // Gọi hàm kích hoạt luồng camera AI
+            activateLiveStream(zaloReceiver, zaloMessage);
         });
 
-        // 5. Giữ nguyên cấu trúc truyền URL, cập nhật hiệu ứng UI Fade-in
-        function activateLiveStream(clipName, receiverName, message) {
-            // Xử lý hiệu ứng tắt Placeholder (Fade out)
+        function activateLiveStream(receiverName, message) {
+            // Xử lý hiệu ứng tắt Màn Hình Chờ (Fade out)
             const placeholder = document.getElementById('placeholder');
             placeholder.style.opacity = '0';
             setTimeout(() => {
                 placeholder.style.display = 'none';
             }, 800);
             
-            // Hiện LED Live Badge thở sâu lắng
+            // Hiện đèn hiệu LED Live Badge nhấp nháy công nghệ
             const indicator = document.getElementById('status-indicator');
             indicator.classList.add('active');
 
-            // Gắn src và tạo hiệu ứng Fade in mượt mà cho màn hình Live
             const videoFeed = document.getElementById('video-feed');
             
-            // --- LOGIC BACKEND GIỮ NGUYÊN HOÀN TOÀN ---
-            const streamUrl = `${SERVER_URL}/video-feed?clip=${encodeURIComponent(clipName)}&name=${encodeURIComponent(receiverName)}&msg=${encodeURIComponent(message)}&_t=${new Date().getTime()}`;
+            // --- ĐỒNG BỘ LOGIC BACKEND MỚI (Bỏ tham số clip vì app.py mới đã đọc trực tiếp RTSP) ---
+            const streamUrl = `${SERVER_URL}/video-feed?name=${encodeURIComponent(receiverName)}&msg=${encodeURIComponent(message)}&_t=${new Date().getTime()}`;
             
             videoFeed.src = streamUrl;
             videoFeed.style.display = 'block';
             
-            // Kích hoạt class animation
+            // Kích hoạt hiệu ứng Fade in hiện màn hình mượt mà
             setTimeout(() => {
                 videoFeed.classList.add('playing');
             }, 50);
         }
 
-        // Tự động nạp Dropdown khi trang vừa mở
+        // Tự động nạp cấu hình khi trang Web vừa mở xong
         window.addEventListener('DOMContentLoaded', () => {
             initClipDropdown();
         });
