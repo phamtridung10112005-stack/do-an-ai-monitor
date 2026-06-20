@@ -41,7 +41,6 @@
             padding: 3rem 2rem;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
-            /* Điểm sáng nền rất mờ ảo, cảm giác sâu thẳm */
             background-image: 
                 radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.08), transparent 25%),
                 radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 25%);
@@ -140,7 +139,6 @@
             letter-spacing: 1px;
         }
 
-        /* Input / Select / Textarea Luxury Styling */
         input, select, textarea {
             width: 100%;
             background: rgba(255, 255, 255, 0.03);
@@ -169,11 +167,9 @@
             color: var(--text-main);
         }
 
-        /* Focus Animation cho Form Elements */
         input:focus, select:focus, textarea:focus {
             background: rgba(255, 255, 255, 0.05);
             border-color: #8b5cf6;
-            /* Phát sáng lan tỏa chậm giống năng lượng hội tụ */
             box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15), inset 0 2px 4px rgba(0,0,0,0.2);
         }
         
@@ -186,7 +182,6 @@
             color: rgba(148, 163, 184, 0.4);
         }
 
-        /* Nút Kích hoạt Premium Micro-interactions */
         .btn-activate {
             width: 100%;
             padding: 1.25rem;
@@ -205,7 +200,6 @@
             margin-top: 1rem;
         }
 
-        /* Hiệu ứng Shimmer sweep qua nút */
         .btn-activate::after {
             content: '';
             position: absolute;
@@ -221,7 +215,7 @@
         }
 
         .btn-activate:hover {
-            transform: translateY(-3px); /* Nhấc nhẹ nút lên cực êm */
+            transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(139, 92, 246, 0.6), 0 0 10px rgba(59, 130, 246, 0.4);
         }
 
@@ -229,7 +223,6 @@
             left: 150%;
         }
 
-        /* Monitor Layout */
         .monitor-wrapper {
             animation: fadeInRight 1s ease-out;
             display: flex;
@@ -239,7 +232,7 @@
 
         .monitor-screen {
             flex: 1;
-            background: #02040a; /* Đen sâu thẳm như màn hình tắt của Apple */
+            background: #02040a;
             border-radius: 24px;
             position: relative;
             overflow: hidden;
@@ -251,7 +244,6 @@
             box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
         }
 
-        /* Đèn Live Badge với hiệu ứng thở (Breathing) sâu lắng */
         .status-indicator {
             position: absolute;
             top: 2rem;
@@ -282,7 +274,6 @@
             height: 8px;
             border-radius: 50%;
             background-color: var(--accent-red);
-            /* Nhịp thở chậm rãi, sâu lắng */
             animation: breathGlow 3s infinite ease-in-out;
         }
 
@@ -296,7 +287,6 @@
             letter-spacing: 1.5px;
         }
 
-        /* Thẻ img hiển thị Video với hiệu ứng Fade-in cực mượt */
         #video-feed {
             width: 100%;
             height: 100%;
@@ -311,7 +301,6 @@
             opacity: 1;
         }
 
-        /* Hiệu ứng Glow Pulse / Skeleton Loading cực kỳ công nghệ */
         .placeholder {
             position: absolute;
             inset: 0;
@@ -324,7 +313,6 @@
             transition: opacity 0.8s ease;
         }
 
-        /* Luồng sáng quét ngang skeleton */
         .placeholder::before {
             content: '';
             position: absolute;
@@ -345,7 +333,6 @@
             stroke: rgba(148, 163, 184, 0.4);
             stroke-width: 1.5;
             fill: none;
-            /* Pulse icon */
             animation: pulseIcon 3s infinite ease-in-out;
         }
 
@@ -369,7 +356,6 @@
             opacity: 0.7;
         }
 
-        /* Animations cho toàn bộ Layout */
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -395,6 +381,11 @@
     <div class="container">
         <div class="card controls">
             <div class="card-title">Cấu hình Hệ thống</div>
+
+            <div class="form-group">
+                <label for="server-url">Địa chỉ Backend Server (Cloudflare URL)</label>
+                <input type="text" id="server-url" placeholder="Dán link https://...trycloudflare.com vào đây...">
+            </div>
 
             <div class="form-group">
                 <label for="clip-select">Nguồn Video Stream</label>
@@ -442,15 +433,8 @@
     </div>
 
     <script>
-        // 1. Cấu hình URL Backend - Đã cập nhật theo tunnel Cloudflare mới nhất của bạn
-        const SERVER_URL = 'https://pipeline-arguments-controversial-joel.trycloudflare.com';
-        
-        // 2. Chuyển sang 1 luồng duy nhất đại diện cho Camera thật góc rộng thay vì danh sách clip cũ
-        const AVAILABLE_CLIPS = [
-            'ezviz_live_sub'
-        ];
+        const AVAILABLE_CLIPS = ['ezviz_live_sub'];
 
-        // Đổ dữ liệu vào Dropdown và TỰ ĐỘNG CHỌN luồng live camera
         function initClipDropdown() {
             const selectEl = document.getElementById('clip-select');
             AVAILABLE_CLIPS.forEach(clip => {
@@ -459,75 +443,60 @@
                 option.textContent = "Camera Ezviz - Toàn Cảnh Phòng Ăn (LIVE)";
                 selectEl.appendChild(option);
             });
-            
-            // Tự động chọn luôn dòng camera live để trải nghiệm mượt mà nhất
             selectEl.value = AVAILABLE_CLIPS[0];
         }
 
         // Bắt sự kiện Click nút Kích hoạt
         document.getElementById('btn-activate').addEventListener('click', function() {
+            // Lấy URL từ ô nhập liệu giao diện
+            const serverUrl = document.getElementById('server-url').value.trim();
             const clipName = document.getElementById('clip-select').value;
             
-            // CHỐNG CRASH BACKEND: Nếu ô nhập bị bỏ trống, tự điền giá trị mặc định chuẩn để đồng bộ hệ thống
-            let zaloReceiver = document.getElementById('zalo-receiver').value.trim();
-            if (!zaloReceiver) {
-                zaloReceiver = "Kiệt Tày";
-            }
-
-            let zaloMessage = document.getElementById('zalo-message').value.trim();
-            if (!zaloMessage) {
-                zaloMessage = "Phát hiện người bị ngã!";
-            }
-
-            if (!clipName) {
-                alert('Vui lòng chọn Nguồn Camera để bắt đầu phân tích!');
+            if (!serverUrl) {
+                alert('Vui lòng nhập địa chỉ Cloudflare URL của Backend Server!');
                 return;
             }
 
-            // In log kiểm tra dữ liệu sạch ra Console
-            const requestData = {
-                nguồn_cam: clipName,
-                người_nhận: zaloReceiver,
-                lời_nhắn: zaloMessage
-            };
-            
-            console.log('=== DỮ LIỆU CHUẨN BỊ XỬ LÝ (GỬI ZALO) ===');
-            console.log(JSON.stringify(requestData, null, 2));
-            console.log('==========================================');
+            // 🔥 TỰ ĐỘNG GHI NHỚ: Lưu URL vào localStorage để lần sau mở trang web ko cần nhập lại
+            localStorage.setItem('SAVED_SERVER_URL', serverUrl);
 
-            // Gọi hàm kích hoạt luồng camera AI
-            activateLiveStream(zaloReceiver, zaloMessage);
+            let zaloReceiver = document.getElementById('zalo-receiver').value.trim();
+            if (!zaloReceiver) zaloReceiver = "Kiệt Tày";
+
+            let zaloMessage = document.getElementById('zalo-message').value.trim();
+            if (!zaloMessage) zaloMessage = "Phát hiện người bị ngã!";
+
+            activateLiveStream(serverUrl, zaloReceiver, zaloMessage);
         });
 
-        function activateLiveStream(receiverName, message) {
-            // Xử lý hiệu ứng tắt Màn Hình Chờ (Fade out)
+        function activateLiveStream(baseUrl, receiverName, message) {
             const placeholder = document.getElementById('placeholder');
             placeholder.style.opacity = '0';
-            setTimeout(() => {
-                placeholder.style.display = 'none';
-            }, 800);
+            setTimeout(() => { placeholder.style.display = 'none'; }, 800);
             
-            // Hiện đèn hiệu LED Live Badge nhấp nháy công nghệ
             const indicator = document.getElementById('status-indicator');
             indicator.classList.add('active');
 
             const videoFeed = document.getElementById('video-feed');
             
-            // --- ĐỒNG BỘ LOGIC BACKEND MỚI (Bỏ tham số clip vì app.py mới đã đọc trực tiếp RTSP) ---
-            const streamUrl = `${SERVER_URL}/video-feed?name=${encodeURIComponent(receiverName)}&msg=${encodeURIComponent(message)}&_t=${new Date().getTime()}`;
+            // Xóa dấu xuyệt thừa ở cuối URL nếu người dùng lỡ tay gõ vào
+            const cleanUrl = baseUrl.replace(/\/$/, "");
+            const streamUrl = `${cleanUrl}/video-feed?name=${encodeURIComponent(receiverName)}&msg=${encodeURIComponent(message)}&_t=${new Date().getTime()}`;
             
             videoFeed.src = streamUrl;
             videoFeed.style.display = 'block';
             
-            // Kích hoạt hiệu ứng Fade in hiện màn hình mượt mà
-            setTimeout(() => {
-                videoFeed.classList.add('playing');
-            }, 50);
+            setTimeout(() => { videoFeed.classList.add('playing'); }, 50);
         }
 
-        // Tự động nạp cấu hình khi trang Web vừa mở xong
+        // Khi vừa mở trang Web: Tự động nạp lại URL cũ đã lưu trong máy người dùng (nếu có)
         window.addEventListener('DOMContentLoaded', () => {
             initClipDropdown();
+            
+            const savedUrl = localStorage.getItem('SAVED_SERVER_URL');
+            if (savedUrl) {
+                document.getElementById('server-url').value = savedUrl;
+            }
         });
     </script>
 </body>
