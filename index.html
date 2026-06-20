@@ -21,7 +21,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
         body {
             background-color: var(--bg-color); color: var(--text-main); min-height: 100vh;
-            display: flex; flex-direction: column; padding: 2rem; overflow-x: hidden;
+            display: flex; flex-direction: column; padding: 2rem;
             background-image: 
                 radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.08), transparent 25%),
                 radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 25%);
@@ -42,7 +42,10 @@
         input, select, textarea { width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); color: var(--text-main); padding: 1rem; font-size: 0.95rem; border-radius: 14px; outline: none; transition: all 0.3s ease; }
         input:focus, select:focus, textarea:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15); }
 
-        /* Style cho khối Checkbox Lọc Class */
+        /* 🔥 FIX CHÍ MẠNG: Sửa lỗi chữ biến mất trắng tinh trên thanh chọn dropdown menu */
+        select optgroup { background-color: #0f172a !important; color: #3b82f6 !important; font-weight: 700; font-size: 0.9rem; }
+        select option { background-color: #030712 !important; color: #f8fafc !important; padding: 0.5rem; }
+
         .checkbox-group { display: grid; grid-template-columns: 1fr; gap: 0.75rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 14px; border: 1px solid var(--card-border); }
         .checkbox-item { display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--text-main); font-weight: 500; font-size: 0.95rem; }
         .checkbox-item input { width: auto; cursor: pointer; accent-color: #8b5cf6; }
@@ -66,7 +69,7 @@
 <body>
 
     <header>
-        <h1>Hệ Thống Phân Tích Hành Vi Đa Nhiệm V3</h1>
+        <h1>Hệ Thống Phân Tích Hành Vi Đa Nhiệm V3.1</h1>
     </header>
 
     <div class="container">
@@ -75,7 +78,7 @@
 
             <div class="form-group">
                 <label>Địa chỉ Ngrok / Cloudflare URL Backend</label>
-                <input type="text" id="server-url" placeholder="http://127.0.0.1:8000">
+                <input type="text" id="server-url" placeholder="https://...trycloudflare.com" onchange="loadClipsDynamically()">
             </div>
 
             <div class="form-group">
@@ -87,32 +90,18 @@
             </div>
 
             <div id="demo-clip-wrapper" class="form-group hidden">
-                <label for="clip-select">Chọn Clip Mô Phỏng</label>
+                <label for="clip-select">Chọn Clip Mô Phỏng (Auto-Scan)</label>
                 <select id="clip-select">
-                    <optgroup label="Bạo Lực Học Đường (AVI)">
-                        <option value="bao_luc_hoc_duong/clip01.avi">Bạo lực - Clip 01</option>
-                        <option value="bao_luc_hoc_duong/clip02.avi">Bạo lực - Clip 02</option>
-                        <option value="bao_luc_hoc_duong/clip08.avi">Bạo lực - Clip 08</option>
-                    </optgroup>
-                    <optgroup label="Học Sinh Học Bài (MP4)">
-                        <option value="hoc_sinh_hoc_bai/clip1.mp4">Học bài - Clip 1</option>
-                        <option value="hoc_sinh_hoc_bai/clip2.mp4">Học bài - Clip 2</option>
-                        <option value="hoc_sinh_hoc_bai/clip9.mp4">Học bài - Clip 9</option>
-                    </optgroup>
-                    <optgroup label="Té Ngã Lớp Học (MP4)">
-                        <option value="te_nga/clip001.mp4">Té ngã - Clip 001</option>
-                        <option value="te_nga/clip002.mp4">Té ngã - Clip 002</option>
-                        <option value="te_nga/clip100.mp4">Té ngã - Clip 100</option>
-                    </optgroup>
+                    <option value="">-- Vui lòng nhập URL Server để nạp danh sách clip --</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>Bộ lọc phân luồng AI (Tích chọn để kích hoạt)</label>
+                <label>Bộ lọc phân luồng AI</label>
                 <div class="checkbox-group">
-                    <label class="checkbox-item"><input type="checkbox" id="chk-nga" checked> 🚨 Nhận diện Ngã (Class 0)</label>
-                    <label class="checkbox-item"><input type="checkbox" id="chk-baoluc" checked> ⚔️ Nhận diện Bạo lực (Class 3)</label>
-                    <label class="checkbox-item"><input type="checkbox" id="chk-taptruong" checked> 📚 Mất tập trung lớp học (Class 4,6,9,10)</label>
+                    <label class="checkbox-item"><input type="checkbox" id="chk-nga" checked> 🚨 Nhận diện Ngã</label>
+                    <label class="checkbox-item"><input type="checkbox" id="chk-baoluc" checked> ⚔️ Nhận diện Bạo lực</label>
+                    <label class="checkbox-item"><input type="checkbox" id="chk-taptruong" checked> 📚 Mất tập trung lớp học</label>
                 </div>
             </div>
 
@@ -136,7 +125,7 @@
             </div>
             <div id="placeholder" style="text-align: center; color: var(--text-dim);">
                 <h2>MÀN HÌNH ĐIỀU KHIỂN</h2>
-                <p style="margin-top: 5px;">Hệ thống V3 sẵn sàng tiếp nhận luồng dữ liệu</p>
+                <p style="margin-top: 5px;">Hệ thống sẵn sàng tiếp nhận luồng dữ liệu</p>
             </div>
             <img id="video-feed" src="" alt="Live Feed" />
         </div>
@@ -150,6 +139,44 @@
             document.getElementById('btn-mode-live').classList.toggle('active', mode === 'live');
             document.getElementById('btn-mode-demo').classList.toggle('active', mode === 'demo');
             document.getElementById('demo-clip-wrapper').classList.toggle('hidden', mode === 'live');
+            if(mode === 'demo') loadClipsDynamically();
+        }
+
+        // 🔥 TUYỆT CHIÊU 3: Tự động gọi API lên Pi 5 bốc sạch toàn bộ file clip ném lên Vercel
+        async function loadClipsDynamically() {
+            const serverUrl = document.getElementById('server-url').value.trim();
+            if (!serverUrl) return;
+            
+            const cleanUrl = serverUrl.replace(/\/$/, "");
+            const selectEl = document.getElementById('clip-select');
+            
+            try {
+                const response = await fetch(`${cleanUrl}/list-clips`);
+                const data = await response.json();
+                
+                selectEl.innerHTML = ''; // Xóa thông báo cũ
+                
+                const friendlyNames = {
+                    "bao_luc_hoc_duong": "⚔️ BẠO LỰC HỌC ĐƯỜNG",
+                    "hoc_sinh_hoc_bai": "📚 HÀNH VI LỚP HỌC",
+                    "te_nga": "🚨 TÉ NGÃ LỚP HỌC"
+                };
+
+                for (const [folder, files] of Object.entries(data)) {
+                    const group = document.createElement('optgroup');
+                    group.label = friendlyNames[folder] || folder.toUpperCase();
+                    
+                    files.forEach(file => {
+                        const option = document.createElement('option');
+                        option.value = `${folder}/${file}`;
+                        option.textContent = file;
+                        group.appendChild(option);
+                    });
+                    selectEl.appendChild(group);
+                }
+            } catch (err) {
+                console.error("Lỗi quét kho dữ liệu clip:", err);
+            }
         }
 
         document.getElementById('btn-activate').addEventListener('click', function() {
@@ -171,12 +198,11 @@
             document.getElementById('status-indicator').classList.add('active');
             
             const cleanUrl = serverUrl.replace(/\/$/, "");
-            
-            // Khởi tạo chuỗi tham số điều hướng động gửi lên Backend API
             let streamUrl = `${cleanUrl}/video-feed?mode=${currentMode}&check_nga=${checkNga}&check_baoluc=${checkBaoluc}&check_taptruong=${checkTaptruong}&name=${encodeURIComponent(receiver)}&msg=${encodeURIComponent(message)}`;
             
             if (currentMode === 'demo') {
                 const clipPath = document.getElementById('clip-select').value;
+                if(!clipPath) { alert('Chưa chọn clip hoặc danh sách chưa nạp xong!'); return; }
                 const parts = clipPath.split('/');
                 streamUrl += `&clip_type=${parts[0]}&clip_name=${parts[1]}`;
             }
@@ -188,7 +214,10 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedUrl = localStorage.getItem('SAVED_URL_V3');
-            if (savedUrl) document.getElementById('server-url').value = savedUrl;
+            if (savedUrl) {
+                document.getElementById('server-url').value = savedUrl;
+                loadClipsDynamically();
+            }
         });
     </script>
 </body>
