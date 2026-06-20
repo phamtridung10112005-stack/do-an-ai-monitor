@@ -42,7 +42,7 @@
         input, select, textarea { width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); color: var(--text-main); padding: 1rem; font-size: 0.95rem; border-radius: 14px; outline: none; transition: all 0.3s ease; }
         input:focus, select:focus, textarea:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15); }
 
-        /* 🔥 FIX CHÍ MẠNG: Sửa lỗi chữ biến mất trắng tinh trên thanh chọn dropdown menu */
+        /* 🔥 FIX CHÍ MẠNG: Ép cứng màu chữ và nền của ô Dropdown để không bị mờ ẩn chữ */
         select optgroup { background-color: #0f172a !important; color: #3b82f6 !important; font-weight: 700; font-size: 0.9rem; }
         select option { background-color: #030712 !important; color: #f8fafc !important; padding: 0.5rem; }
 
@@ -58,18 +58,18 @@
         .btn-activate:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(139, 92, 246, 0.5); }
 
         .monitor-screen { background: #02040a; border-radius: 24px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 550px; }
-        .status-indicator { position: absolute; top: 1.5rem; right: 1.5rem; display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.85rem; z-index: 10; background: rgba(3, 7, 18, 0.8); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--card-border); opacity: 0; }
+        .status-indicator { position: absolute; top: 1.5rem; right: 1.5rem; display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.85rem; z-index: 10; background: rgba(3, 7, 18, 0.8); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--card-border); opacity: 0; transition: opacity 0.3s ease; }
         .status-indicator.active { opacity: 1; }
         .led-active { width: 8px; height: 8px; border-radius: 50%; background-color: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
         
-        #video-feed { width: 100%; height: 100%; object-fit: contain; display: none; }
+        #video-feed { width: 100%; height: 100%; object-fit: contain; display: none; opacity: 0; transition: opacity 0.5s ease; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Hệ Thống Phân Tích Hành Vi Đa Nhiệm V3.1</h1>
+        <h1>Hệ Thống Phân Tích Hành Vi Đa Nhiệm V3.3</h1>
     </header>
 
     <div class="container">
@@ -142,7 +142,6 @@
             if(mode === 'demo') loadClipsDynamically();
         }
 
-        // 🔥 TUYỆT CHIÊU 3: Tự động gọi API lên Pi 5 bốc sạch toàn bộ file clip ném lên Vercel
         async function loadClipsDynamically() {
             const serverUrl = document.getElementById('server-url').value.trim();
             if (!serverUrl) return;
@@ -154,7 +153,7 @@
                 const response = await fetch(`${cleanUrl}/list-clips`);
                 const data = await response.json();
                 
-                selectEl.innerHTML = ''; // Xóa thông báo cũ
+                selectEl.innerHTML = ''; 
                 
                 const friendlyNames = {
                     "bao_luc_hoc_duong": "⚔️ BẠO LỰC HỌC ĐƯỜNG",
@@ -198,7 +197,9 @@
             document.getElementById('status-indicator').classList.add('active');
             
             const cleanUrl = serverUrl.replace(/\/$/, "");
-            let streamUrl = `${cleanUrl}/video-feed?mode=${currentMode}&check_nga=${checkNga}&check_baoluc=${checkBaoluc}&check_taptruong=${checkTaptruong}&name=${encodeURIComponent(receiver)}&msg=${encodeURIComponent(message)}`;
+            
+            // 🔥 VÁ LỖI LỲ LUỒNG: Cấy chặt đuôi timestamp mã số nhảy động _t để ép Cloudflare bẻ gãy bộ nhớ đệm Cache
+            let streamUrl = `${cleanUrl}/video-feed?mode=${currentMode}&check_nga=${checkNga}&check_baoluc=${checkBaoluc}&check_taptruong=${checkTaptruong}&name=${encodeURIComponent(receiver)}&msg=${encodeURIComponent(message)}&_t=${new Date().getTime()}`;
             
             if (currentMode === 'demo') {
                 const clipPath = document.getElementById('clip-select').value;
@@ -207,9 +208,24 @@
                 streamUrl += `&clip_type=${parts[0]}&clip_name=${parts[1]}`;
             }
 
+            // ========================================================
+            // 🔥 BIỆN PHÁP PHÁ XÍCH LUỒNG STREAM ĐƠ CỨNG (DOM RECYCLING)
+            // ========================================================
             const videoEl = document.getElementById('video-feed');
-            videoEl.src = streamUrl;
-            videoEl.style.display = 'block';
+            
+            // 1. Gán link rỗng cắt kết nối Socket hiện tại ngay lập tức
+            videoEl.src = ""; 
+            
+            // 2. Clone nguyên bản thẻ ảnh mới để gọt sạch tàn dư cache ngầm của trình duyệt
+            const newVideoEl = videoEl.cloneNode(true);
+            newVideoEl.src = streamUrl;
+            newVideoEl.style.display = 'block';
+            
+            // 3. Thực hiện tráo thẻ mới đè lên vị trí thẻ cũ trên cây DOM giao diện Vercel
+            videoEl.parentNode.replaceChild(newVideoEl, videoEl);
+            
+            // 4. Kích hoạt hiệu ứng hiển thị căng đét mượt mà
+            setTimeout(() => { newVideoEl.style.opacity = '1'; }, 50);
         });
 
         window.addEventListener('DOMContentLoaded', () => {
