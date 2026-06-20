@@ -3,379 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Fall Detection | Luxury High-Tech</title>
+    <title>AI Multi-Task Control Panel | High-Tech</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Tông màu Obsidian Black huyền bí */
             --bg-color: #030712;
-            
-            /* Glassmorphism */
             --card-bg: rgba(15, 23, 42, 0.4);
             --card-border: rgba(255, 255, 255, 0.05);
-            
-            /* Typography */
             --text-main: #f8fafc;
             --text-dim: #94a3b8;
-            
-            /* Accent Colors: Xanh hạt lựu chuyển tím Linear */
             --accent-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
             --accent-glow: rgba(59, 130, 246, 0.5);
-            --accent-red: #ef4444;
+            --accent-green: #10b981;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 3rem 2rem;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
+            background-color: var(--bg-color); color: var(--text-main); min-height: 100vh;
+            display: flex; flex-direction: column; padding: 2rem; overflow-x: hidden;
             background-image: 
                 radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.08), transparent 25%),
                 radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 25%);
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 4rem;
-            animation: fadeInDown 1s ease-out;
-        }
-
-        header h1 {
-            font-size: 2.75rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            letter-spacing: -1px;
-            background: linear-gradient(to right, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        header { text-align: center; margin-bottom: 2.5rem; }
+        header h1 { font-size: 2.5rem; font-weight: 700; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        header p {
-            font-size: 1.1rem;
-            color: var(--text-dim);
-            font-weight: 400;
-            letter-spacing: 0.5px;
-        }
+        .container { display: grid; grid-template-columns: 450px 1fr; gap: 2rem; max-width: 1500px; margin: 0 auto; width: 100%; flex: 1; }
+        .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 24px; padding: 2rem; backdrop-filter: blur(16px); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .controls { display: flex; flex-direction: column; gap: 1.5rem; }
+        .card-title { font-size: 1.1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 12px; }
+        .card-title::before { content: ''; display: block; width: 6px; height: 20px; background: var(--accent-gradient); border-radius: 8px; }
 
-        .container {
-            display: grid;
-            grid-template-columns: 420px 1fr;
-            gap: 2.5rem;
-            max-width: 1440px;
-            margin: 0 auto;
-            width: 100%;
-            flex: 1;
-        }
-
-        @media (max-width: 1024px) {
-            .container {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-        }
-
-        /* Glassmorphism Cards */
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 2.5rem;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        .controls {
-            animation: fadeInLeft 1s ease-out;
-            display: flex;
-            flex-direction: column;
-            gap: 1.8rem;
-        }
-
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .card-title::before {
-            content: '';
-            display: block;
-            width: 8px;
-            height: 24px;
-            background: var(--accent-gradient);
-            border-radius: 8px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .form-group label {
-            color: var(--text-dim);
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--card-border);
-            color: var(--text-main);
-            padding: 1.25rem 1.2rem;
-            font-size: 1rem;
-            border-radius: 16px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            outline: none;
-            appearance: none;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        select {
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 1.2rem center;
-            background-size: 1.2em;
-            padding-right: 3rem;
-            cursor: pointer;
-        }
-
-        select option {
-            background: var(--bg-color);
-            color: var(--text-main);
-        }
-
-        input:focus, select:focus, textarea:focus {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: #8b5cf6;
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15), inset 0 2px 4px rgba(0,0,0,0.2);
-        }
+        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .form-group label { color: var(--text-dim); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
+        input, select, textarea { width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); color: var(--text-main); padding: 1rem; font-size: 0.95rem; border-radius: 14px; outline: none; transition: all 0.3s ease; }
+        input:focus, select:focus, textarea:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15); }
 
-        input::placeholder, textarea::placeholder {
-            color: rgba(148, 163, 184, 0.4);
-        }
+        /* Style cho khối Checkbox Lọc Class */
+        .checkbox-group { display: grid; grid-template-columns: 1fr; gap: 0.75rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 14px; border: 1px solid var(--card-border); }
+        .checkbox-item { display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--text-main); font-weight: 500; font-size: 0.95rem; }
+        .checkbox-item input { width: auto; cursor: pointer; accent-color: #8b5cf6; }
 
-        .btn-activate {
-            width: 100%;
-            padding: 1.25rem;
-            background: var(--accent-gradient);
-            color: #fff;
-            border: none;
-            border-radius: 16px;
-            font-size: 1.05rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px var(--accent-glow);
-            margin-top: 1rem;
-        }
+        .mode-selector { display: flex; gap: 10px; background: rgba(0,0,0,0.3); padding: 6px; border-radius: 12px; border: 1px solid var(--card-border); }
+        .mode-btn { flex: 1; padding: 0.75rem; border: none; border-radius: 8px; background: transparent; color: var(--text-dim); font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .mode-btn.active { background: var(--accent-gradient); color: white; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3); }
 
-        .btn-activate::after {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transform: skewX(-20deg);
-            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .btn-activate { width: 100%; padding: 1.1rem; background: var(--accent-gradient); color: #fff; border: none; border-radius: 16px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px var(--accent-glow); }
+        .btn-activate:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(139, 92, 246, 0.5); }
 
-        .btn-activate span {
-            position: relative;
-            z-index: 2;
-        }
-
-        .btn-activate:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.6), 0 0 10px rgba(59, 130, 246, 0.4);
-        }
-
-        .btn-activate:hover::after {
-            left: 150%;
-        }
-
-        .monitor-wrapper {
-            animation: fadeInRight 1s ease-out;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .monitor-screen {
-            flex: 1;
-            background: #02040a;
-            border-radius: 24px;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 550px;
-            padding: 0;
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
-        }
-
-        .status-indicator {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 600;
-            font-size: 0.9rem;
-            z-index: 20;
-            background: rgba(3, 7, 18, 0.7);
-            padding: 8px 16px;
-            border-radius: 30px;
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(12px);
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-
-        .status-indicator.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .led-breath {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: var(--accent-red);
-            animation: breathGlow 3s infinite ease-in-out;
-        }
-
-        @keyframes breathGlow {
-            0%, 100% { box-shadow: 0 0 5px rgba(239, 68, 68, 0.4); opacity: 0.5; transform: scale(0.9); }
-            50% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.9), 0 0 30px rgba(239, 68, 68, 0.3); opacity: 1; transform: scale(1.1); }
-        }
-
-        .status-text {
-            color: #fff;
-            letter-spacing: 1.5px;
-        }
-
-        #video-feed {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: none;
-            z-index: 5;
-            opacity: 0;
-            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        #video-feed.playing {
-            opacity: 1;
-        }
-
-        .placeholder {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(15, 23, 42, 0.2);
-            z-index: 1;
-            transition: opacity 0.8s ease;
-        }
-
-        .placeholder::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
-            transform: translateX(-100%);
-            animation: skeletonSweep 2.5s infinite;
-        }
-
-        @keyframes skeletonSweep {
-            100% { transform: translateX(100%); }
-        }
-
-        .placeholder-icon {
-            width: 48px;
-            height: 48px;
-            margin-bottom: 1.5rem;
-            stroke: rgba(148, 163, 184, 0.4);
-            stroke-width: 1.5;
-            fill: none;
-            animation: pulseIcon 3s infinite ease-in-out;
-        }
-
-        @keyframes pulseIcon {
-            0%, 100% { opacity: 0.4; transform: scale(0.95); }
-            50% { opacity: 0.8; transform: scale(1.05); }
-        }
-
-        .placeholder h2 {
-            font-weight: 500;
-            font-size: 1.35rem;
-            letter-spacing: 0.5px;
-            color: var(--text-main);
-            opacity: 0.9;
-        }
-
-        .placeholder p {
-            margin-top: 0.75rem;
-            font-size: 0.95rem;
-            color: var(--text-dim);
-            opacity: 0.7;
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInLeft {
-            from { opacity: 0; transform: translateX(-40px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes fadeInRight {
-            from { opacity: 0; transform: translateX(40px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
+        .monitor-screen { background: #02040a; border-radius: 24px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 550px; }
+        .status-indicator { position: absolute; top: 1.5rem; right: 1.5rem; display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.85rem; z-index: 10; background: rgba(3, 7, 18, 0.8); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--card-border); opacity: 0; }
+        .status-indicator.active { opacity: 1; }
+        .led-active { width: 8px; height: 8px; border-radius: 50%; background-color: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
+        
+        #video-feed { width: 100%; height: 100%; object-fit: contain; display: none; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>AI Fall Detection</h1>
-        <p>Hệ thống giám sát phân tích thời gian thực</p>
+        <h1>Hệ Thống Phân Tích Hành Vi Đa Nhiệm V3</h1>
     </header>
 
     <div class="container">
@@ -383,120 +74,121 @@
             <div class="card-title">Cấu hình Hệ thống</div>
 
             <div class="form-group">
-                <label for="server-url">Địa chỉ Backend Server (Cloudflare URL)</label>
-                <input type="text" id="server-url" placeholder="Dán link https://...trycloudflare.com vào đây...">
+                <label>Địa chỉ Ngrok / Cloudflare URL Backend</label>
+                <input type="text" id="server-url" placeholder="http://127.0.0.1:8000">
             </div>
 
             <div class="form-group">
-                <label for="clip-select">Nguồn Video Stream</label>
+                <label>Chế độ nguồn cấp dữ liệu</label>
+                <div class="mode-selector">
+                    <button class="mode-btn active" id="btn-mode-live" onclick="switchMode('live')">IP CAMERA LIVE</button>
+                    <button class="mode-btn" id="btn-mode-demo" onclick="switchMode('demo')">DEMO CLIP MÔ PHỎNG</button>
+                </div>
+            </div>
+
+            <div id="demo-clip-wrapper" class="form-group hidden">
+                <label for="clip-select">Chọn Clip Mô Phỏng</label>
                 <select id="clip-select">
-                    <option value="" disabled>-- Chọn luồng camera cần giám sát --</option>
+                    <optgroup label="Bạo Lực Học Đường (AVI)">
+                        <option value="bao_luc_hoc_duong/clip01.avi">Bạo lực - Clip 01</option>
+                        <option value="bao_luc_hoc_duong/clip02.avi">Bạo lực - Clip 02</option>
+                        <option value="bao_luc_hoc_duong/clip08.avi">Bạo lực - Clip 08</option>
+                    </optgroup>
+                    <optgroup label="Học Sinh Học Bài (MP4)">
+                        <option value="hoc_sinh_hoc_bai/clip1.mp4">Học bài - Clip 1</option>
+                        <option value="hoc_sinh_hoc_bai/clip2.mp4">Học bài - Clip 2</option>
+                        <option value="hoc_sinh_hoc_bai/clip9.mp4">Học bài - Clip 9</option>
+                    </optgroup>
+                    <optgroup label="Té Ngã Lớp Học (MP4)">
+                        <option value="te_nga/clip001.mp4">Té ngã - Clip 001</option>
+                        <option value="te_nga/clip002.mp4">Té ngã - Clip 002</option>
+                        <option value="te_nga/clip100.mp4">Té ngã - Clip 100</option>
+                    </optgroup>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="zalo-receiver">Thông tin nhận cảnh báo (Zalo)</label>
-                <input type="text" id="zalo-receiver" placeholder="Nhập tên người nhận (Mặc định: Kiệt Tày)...">
+                <label>Bộ lọc phân luồng AI (Tích chọn để kích hoạt)</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="checkbox" id="chk-nga" checked> 🚨 Nhận diện Ngã (Class 0)</label>
+                    <label class="checkbox-item"><input type="checkbox" id="chk-baoluc" checked> ⚔️ Nhận diện Bạo lực (Class 3)</label>
+                    <label class="checkbox-item"><input type="checkbox" id="chk-taptruong" checked> 📚 Mất tập trung lớp học (Class 4,6,9,10)</label>
+                </div>
             </div>
 
             <div class="form-group">
-                <label for="zalo-message">Nội dung đính kèm</label>
-                <textarea id="zalo-message" placeholder="Hệ thống phát hiện có người ngã. Vui lòng kiểm tra khu vực này..."></textarea>
+                <label for="zalo-receiver">Người nhận Zalo</label>
+                <input type="text" id="zalo-receiver" placeholder="Kiệt Tày">
             </div>
 
-            <button class="btn-activate" id="btn-activate">
-                <span>KÍCH HOẠT QUAN SÁT</span>
-            </button>
+            <div class="form-group">
+                <label for="zalo-message">Nội dung tin nhắn</label>
+                <textarea id="zalo-message" placeholder="Hệ thống phát hiện sự cố khẩn cấp!"></textarea>
+            </div>
+
+            <button class="btn-activate" id="btn-activate"><span>KÍCH HOẠT HỆ THỐNG</span></button>
         </div>
 
-        <div class="monitor-wrapper">
-            <div class="card monitor-screen">
-                
-                <div class="status-indicator" id="status-indicator">
-                    <div class="led-breath"></div>
-                    <span class="status-text">LIVE STREAM</span>
-                </div>
-
-                <div class="placeholder" id="placeholder">
-                    <svg class="placeholder-icon" viewBox="0 0 24 24">
-                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                        <line x1="8" y1="21" x2="16" y2="21"></line>
-                        <line x1="12" y1="17" x2="12" y2="21"></line>
-                    </svg>
-                    <h2>Màn Hình Chờ</h2>
-                    <p>Sẵn sàng tiếp nhận luồng video phân tích</p>
-                </div>
-
-                <img id="video-feed" src="" alt="Live Stream Feed" />
+        <div class="card monitor-screen">
+            <div class="status-indicator" id="status-indicator">
+                <div class="led-active"></div>
+                <span style="color: #fff; letter-spacing: 1px;">AI STREAMING</span>
             </div>
+            <div id="placeholder" style="text-align: center; color: var(--text-dim);">
+                <h2>MÀN HÌNH ĐIỀU KHIỂN</h2>
+                <p style="margin-top: 5px;">Hệ thống V3 sẵn sàng tiếp nhận luồng dữ liệu</p>
+            </div>
+            <img id="video-feed" src="" alt="Live Feed" />
         </div>
     </div>
 
     <script>
-        const AVAILABLE_CLIPS = ['ezviz_live_sub'];
+        let currentMode = 'live';
 
-        function initClipDropdown() {
-            const selectEl = document.getElementById('clip-select');
-            AVAILABLE_CLIPS.forEach(clip => {
-                const option = document.createElement('option');
-                option.value = clip;
-                option.textContent = "Camera Ezviz - Toàn Cảnh Phòng Ăn (LIVE)";
-                selectEl.appendChild(option);
-            });
-            selectEl.value = AVAILABLE_CLIPS[0];
+        function switchMode(mode) {
+            currentMode = mode;
+            document.getElementById('btn-mode-live').classList.toggle('active', mode === 'live');
+            document.getElementById('btn-mode-demo').classList.toggle('active', mode === 'demo');
+            document.getElementById('demo-clip-wrapper').classList.toggle('hidden', mode === 'live');
         }
 
-        // Bắt sự kiện Click nút Kích hoạt
         document.getElementById('btn-activate').addEventListener('click', function() {
-            // Lấy URL từ ô nhập liệu giao diện
             const serverUrl = document.getElementById('server-url').value.trim();
-            const clipName = document.getElementById('clip-select').value;
-            
             if (!serverUrl) {
-                alert('Vui lòng nhập địa chỉ Cloudflare URL của Backend Server!');
+                alert('Vui lòng nhập URL kết nối Server Backend!');
                 return;
             }
+            localStorage.setItem('SAVED_URL_V3', serverUrl);
 
-            // 🔥 TỰ ĐỘNG GHI NHỚ: Lưu URL vào localStorage để lần sau mở trang web ko cần nhập lại
-            localStorage.setItem('SAVED_SERVER_URL', serverUrl);
+            const checkNga = document.getElementById('chk-nga').checked;
+            const checkBaoluc = document.getElementById('chk-baoluc').checked;
+            const checkTaptruong = document.getElementById('chk-taptruong').checked;
+            
+            let receiver = document.getElementById('zalo-receiver').value.trim() || "Kiệt Tày";
+            let message = document.getElementById('zalo-message').value.trim() || "Phát hiện sự cố khẩn cấp!";
 
-            let zaloReceiver = document.getElementById('zalo-receiver').value.trim();
-            if (!zaloReceiver) zaloReceiver = "Kiệt Tày";
+            document.getElementById('placeholder').style.display = 'none';
+            document.getElementById('status-indicator').classList.add('active');
+            
+            const cleanUrl = serverUrl.replace(/\/$/, "");
+            
+            // Khởi tạo chuỗi tham số điều hướng động gửi lên Backend API
+            let streamUrl = `${cleanUrl}/video-feed?mode=${currentMode}&check_nga=${checkNga}&check_baoluc=${checkBaoluc}&check_taptruong=${checkTaptruong}&name=${encodeURIComponent(receiver)}&msg=${encodeURIComponent(message)}`;
+            
+            if (currentMode === 'demo') {
+                const clipPath = document.getElementById('clip-select').value;
+                const parts = clipPath.split('/');
+                streamUrl += `&clip_type=${parts[0]}&clip_name=${parts[1]}`;
+            }
 
-            let zaloMessage = document.getElementById('zalo-message').value.trim();
-            if (!zaloMessage) zaloMessage = "Phát hiện người bị ngã!";
-
-            activateLiveStream(serverUrl, zaloReceiver, zaloMessage);
+            const videoEl = document.getElementById('video-feed');
+            videoEl.src = streamUrl;
+            videoEl.style.display = 'block';
         });
 
-        function activateLiveStream(baseUrl, receiverName, message) {
-            const placeholder = document.getElementById('placeholder');
-            placeholder.style.opacity = '0';
-            setTimeout(() => { placeholder.style.display = 'none'; }, 800);
-            
-            const indicator = document.getElementById('status-indicator');
-            indicator.classList.add('active');
-
-            const videoFeed = document.getElementById('video-feed');
-            
-            // Xóa dấu xuyệt thừa ở cuối URL nếu người dùng lỡ tay gõ vào
-            const cleanUrl = baseUrl.replace(/\/$/, "");
-            const streamUrl = `${cleanUrl}/video-feed?name=${encodeURIComponent(receiverName)}&msg=${encodeURIComponent(message)}&_t=${new Date().getTime()}`;
-            
-            videoFeed.src = streamUrl;
-            videoFeed.style.display = 'block';
-            
-            setTimeout(() => { videoFeed.classList.add('playing'); }, 50);
-        }
-
-        // Khi vừa mở trang Web: Tự động nạp lại URL cũ đã lưu trong máy người dùng (nếu có)
         window.addEventListener('DOMContentLoaded', () => {
-            initClipDropdown();
-            
-            const savedUrl = localStorage.getItem('SAVED_SERVER_URL');
-            if (savedUrl) {
-                document.getElementById('server-url').value = savedUrl;
-            }
+            const savedUrl = localStorage.getItem('SAVED_URL_V3');
+            if (savedUrl) document.getElementById('server-url').value = savedUrl;
         });
     </script>
 </body>
