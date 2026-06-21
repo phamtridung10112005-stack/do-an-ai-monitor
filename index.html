@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Multi-Task Control Panel | Blackbox V5.0</title>
+    <title>AI Multi-Task Control Panel | Twin Blackbox V5.5</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -31,12 +31,9 @@
         header { text-align: center; margin-bottom: 2.5rem; }
         header h1 { font-size: 2.5rem; font-weight: 700; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* Cấu trúc Grid chia cột phân tán */
         .container { display: grid; grid-template-columns: 450px 1fr; gap: 2rem; max-width: 1500px; margin: 0 auto; width: 100%; flex: 1; }
         .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 24px; padding: 2rem; backdrop-filter: blur(16px); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
         .controls { display: flex; flex-direction: column; gap: 1.5rem; height: fit-content; }
-        
-        /* Khu vực hiển thị stacked phía bên phải */
         .main-content { display: flex; flex-direction: column; gap: 2rem; width: 100%; }
 
         .card-title { font-size: 1.1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 12px; }
@@ -70,8 +67,7 @@
         #video-feed { width: 100%; height: 100%; object-fit: contain; display: none; opacity: 0; transition: opacity 0.5s ease; }
         .hidden { display: none !important; }
 
-        /* 🔥 CSS PHẦN HỘP ĐEN SỰ CỐ MỚI NÂNG CẤP */
-        .incident-card { margin-top: 0rem; }
+        /* CSS HỘP ĐEN NHẬT KÝ */
         .incident-table { width: 100%; border-collapse: collapse; margin-top: 1.2rem; text-align: left; }
         .incident-table th { color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.75rem; border-bottom: 1px solid var(--card-border); }
         .incident-table td { padding: 1rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 0.95rem; color: #e2e8f0; }
@@ -80,8 +76,9 @@
         .btn-view:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); }
         
         .badge-danger { background: rgba(239, 68, 68, 0.12); color: var(--accent-red); padding: 5px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; border: 1px solid rgba(239, 68, 68, 0.2); letter-spacing: 0.5px; }
+        .badge-warning { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); padding: 5px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; }
 
-        /* 🔥 POPUP THEATER MODAL WINDOW */
+        /* THEATER MODAL WINDOW */
         .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(2, 4, 10, 0.85); backdrop-filter: blur(12px); align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
         .modal-content { background: #0b0f19; border: 1px solid rgba(255,255,255,0.08); padding: 1.5rem; border-radius: 24px; width: 90%; max-width: 800px; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); }
         .close-modal { position: absolute; top: -15px; right: -15px; font-size: 1.5rem; width: 36px; height: 36px; background: #1e293b; color: #fff; border-radius: 50%; border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
@@ -91,7 +88,7 @@
 <body>
 
     <header>
-        <h1>Hệ Thống Phân Tích Hành Vi Đa Nhiệm V5.0</h1>
+        <h1>Hệ Thống Phân Tích Hành Vi Đa Nhiệm V5.5</h1>
     </header>
 
     <div class="container">
@@ -153,14 +150,14 @@
                 <img id="video-feed" src="" alt="Live Feed" />
             </div>
 
-            <div class="card incident-card">
-                <div class="card-title">Nhật ký sự cố Hộp Đen (Blackbox Records)</div>
+            <div class="card">
+                <div class="card-title">Nhật ký sự cố Hộp Đen Khẩn Cấp (Blackbox)</div>
                 <table class="incident-table">
                     <thead>
                         <tr>
-                            <th>Thời Gian Sự Cố (Báo Cáo)</th>
-                            <th>Phân Loại Thừa Hành</th>
-                            <th>Hộp Đen Vật Lý (.MP4)</th>
+                            <th>Thời Gian Ghi Nhận</th>
+                            <th>Phân Loại Hành Vi</th>
+                            <th>Hộp Đen Hệ Thống (.MP4)</th>
                         </tr>
                     </thead>
                     <tbody id="incident-tbody">
@@ -177,7 +174,7 @@
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal()">&times;</span>
             <div class="card-title" id="modal-title" style="margin-bottom: 1rem; font-size: 1rem;">Xem lại clip sự cố hộp đen</div>
-            <video id="modal-video" controls autoplay style="width: 100%; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); bg: #000;"></video>
+            <video id="modal-video" controls autoplay style="width: 100%; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); background: #000;"></video>
         </div>
     </div>
 
@@ -193,12 +190,9 @@
             if(mode === 'demo') loadClipsDynamically();
         }
 
-        // Đồng bộ nạp dữ liệu toàn cục
         function initSystemSync() {
             loadClipsDynamically();
             loadIncidentsDynamically();
-            
-            // Xóa bộ hẹn giờ cũ nếu có, kích hoạt chu kỳ 5 giây tự động quét Hộp Đen
             if(incidentTimer) clearInterval(incidentTimer);
             incidentTimer = setInterval(loadIncidentsDynamically, 5000);
         }
@@ -232,11 +226,11 @@
                     selectEl.appendChild(group);
                 }
             } catch (err) {
-                console.error("Lỗi quét dữ liệu clips:", err);
+                console.error("Lỗi nạp kho video:", err);
             }
         }
 
-        // 🔥 HÀM MỚI CHÍ MẠNG: THẦ SƯU TẬP HỘP ĐEN TỪ RASPBERRY PI 5
+        // 🔥 CHƯƠNG TRÌNH PHÂN PHỐI TWIN-BLACKBOX: TÁCH BIỆT RÕ RÀNG NGÃ VÀ BẠO LỰC
         async function loadIncidentsDynamically() {
             const serverUrl = document.getElementById('server-url').value.trim();
             if (!serverUrl) return;
@@ -249,13 +243,14 @@
                 
                 tbody.innerHTML = '';
                 if (!files || files.length === 0 || files.ERROR_LOG) {
-                    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-dim); padding: 1.5rem;">📁 Hộp đen trống (Chưa ghi nhận sự cố thực tế từ Cam Live)</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-dim); padding: 1.5rem;">📁 Hộp đen trống (Hệ thống sẵn sàng bọc dữ liệu ngã/bạo lực)</td></tr>`;
                     return;
                 }
 
                 files.forEach(file => {
-                    // Trích xuất mốc UNIX từ tên: incident_17189123.mp4 -> 17189123
-                    const unixString = file.replace('incident_', '').replace('.mp4', '');
+                    const cleanName = file.replace('.mp4', '');
+                    const parts = cleanName.split('_');
+                    const unixString = parts[parts.length - 1];
                     const timestamp = parseInt(unixString) * 1000;
                     let timeFormatted = "Bất định";
                     
@@ -264,10 +259,20 @@
                         timeFormatted = d.toLocaleTimeString('vi-VN') + ' | ' + d.toLocaleDateString('vi-VN');
                     }
 
+                    // Đổ khuôn Badge màu sắc tách biệt hoàn toàn theo yêu cầu của ông
+                    let badgeHTML = '';
+                    if (cleanName.includes('te_nga')) {
+                        badgeHTML = `<span class="badge-danger">🚨 TÉ NGÃ CHẤN THƯƠNG</span>`;
+                    } else if (cleanName.includes('bao_luc')) {
+                        badgeHTML = `<span class="badge-warning">⚔️ XUNG ĐỘT BẠO LỰC</span>`;
+                    } else {
+                        badgeHTML = `<span class="badge-info" style="background: rgba(148,163,184,0.1); color: #94a3b8; border: 1px solid rgba(148,163,184,0.2); padding: 5px 12px; border-radius: 8px;">📁 FILE SỰ CỐ TẠM</span>`;
+                    }
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td style="font-weight: 600; color: #f1f5f9;">⏱️ ${timeFormatted}</td>
-                        <td><span class="badge-danger">🚨 KHẨN CẤP (AI LIVE)</span></td>
+                        <td>${badgeHTML}</td>
                         <td><button class="btn-view" onclick="playBlackbox('${cleanUrl}', '${file}', '${timeFormatted}')">▶ Xem Hộp Đen</button></td>
                     `;
                     tbody.appendChild(tr);
@@ -277,13 +282,10 @@
             }
         }
 
-        // PHÁT VIDEO POPUP MODAL TỪ XA
         function playBlackbox(serverUrl, filename, timeInfo) {
             const modal = document.getElementById('video-modal');
             const video = document.getElementById('modal-video');
-            document.getElementById('modal-title').textContent = `🎞️ Hộp đen sự cố ghi nhận lúc: ${timeInfo}`;
-            
-            // Chỉ định đường dẫn kho tĩnh tĩnh /incidents_repo đã mount trên Pi 5
+            document.getElementById('modal-title').textContent = `🎞️ Trích xuất Hộp đen mốc: ${timeInfo}`;
             video.src = `${serverUrl}/incidents_repo/${filename}`;
             modal.style.display = 'flex';
             setTimeout(() => { modal.style.opacity = '1'; }, 10);
@@ -292,19 +294,14 @@
         function closeModal() {
             const modal = document.getElementById('video-modal');
             const video = document.getElementById('modal-video');
-            video.pause();
-            video.src = "";
+            video.pause(); video.src = "";
             modal.style.opacity = '0';
             setTimeout(() => { modal.style.display = 'none'; }, 300);
         }
 
-        // TRIGGER KÍCH HOẠT HỆ THỐNG AI STREAMING
         document.getElementById('btn-activate').addEventListener('click', function() {
             const serverUrl = document.getElementById('server-url').value.trim();
-            if (!serverUrl) {
-                alert('Vui lòng nhập URL kết nối Server Backend!');
-                return;
-            }
+            if (!serverUrl) { alert('Vui lòng nhập URL kết nối Server Backend!'); return; }
             localStorage.setItem('SAVED_URL_V3', serverUrl);
 
             const checkNga = document.getElementById('chk-nga').checked;
@@ -329,12 +326,10 @@
 
             const videoEl = document.getElementById('video-feed');
             videoEl.src = ""; 
-            
             const newVideoEl = videoEl.cloneNode(true);
             newVideoEl.src = streamUrl;
             newVideoEl.style.display = 'block';
             videoEl.parentNode.replaceChild(newVideoEl, videoEl);
-            
             setTimeout(() => { newVideoEl.style.opacity = '1'; }, 50);
         });
 
