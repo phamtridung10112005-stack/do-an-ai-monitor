@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Multi-Task Control Panel | High-Tech</title>
+    <title>AI Multi-Task Control Panel | Blackbox V5.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -16,6 +16,7 @@
             --accent-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
             --accent-glow: rgba(59, 130, 246, 0.5);
             --accent-green: #10b981;
+            --accent-red: #ef4444;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -30,9 +31,14 @@
         header { text-align: center; margin-bottom: 2.5rem; }
         header h1 { font-size: 2.5rem; font-weight: 700; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
+        /* Cấu trúc Grid chia cột phân tán */
         .container { display: grid; grid-template-columns: 450px 1fr; gap: 2rem; max-width: 1500px; margin: 0 auto; width: 100%; flex: 1; }
         .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 24px; padding: 2rem; backdrop-filter: blur(16px); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
-        .controls { display: flex; flex-direction: column; gap: 1.5rem; }
+        .controls { display: flex; flex-direction: column; gap: 1.5rem; height: fit-content; }
+        
+        /* Khu vực hiển thị stacked phía bên phải */
+        .main-content { display: flex; flex-direction: column; gap: 2rem; width: 100%; }
+
         .card-title { font-size: 1.1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 12px; }
         .card-title::before { content: ''; display: block; width: 6px; height: 20px; background: var(--accent-gradient); border-radius: 8px; }
 
@@ -42,7 +48,6 @@
         input, select, textarea { width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); color: var(--text-main); padding: 1rem; font-size: 0.95rem; border-radius: 14px; outline: none; transition: all 0.3s ease; }
         input:focus, select:focus, textarea:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15); }
 
-        /* 🔥 FIX CHÍ MẠNG: Ép cứng màu chữ và nền của ô Dropdown để không bị mờ ẩn chữ */
         select optgroup { background-color: #0f172a !important; color: #3b82f6 !important; font-weight: 700; font-size: 0.9rem; }
         select option { background-color: #030712 !important; color: #f8fafc !important; padding: 0.5rem; }
 
@@ -57,19 +62,36 @@
         .btn-activate { width: 100%; padding: 1.1rem; background: var(--accent-gradient); color: #fff; border: none; border-radius: 16px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px var(--accent-glow); }
         .btn-activate:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(139, 92, 246, 0.5); }
 
-        .monitor-screen { background: #02040a; border-radius: 24px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 550px; }
+        .monitor-screen { background: #02040a; border-radius: 24px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 500px; }
         .status-indicator { position: absolute; top: 1.5rem; right: 1.5rem; display: flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.85rem; z-index: 10; background: rgba(3, 7, 18, 0.8); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--card-border); opacity: 0; transition: opacity 0.3s ease; }
         .status-indicator.active { opacity: 1; }
         .led-active { width: 8px; height: 8px; border-radius: 50%; background-color: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
         
         #video-feed { width: 100%; height: 100%; object-fit: contain; display: none; opacity: 0; transition: opacity 0.5s ease; }
         .hidden { display: none !important; }
+
+        /* 🔥 CSS PHẦN HỘP ĐEN SỰ CỐ MỚI NÂNG CẤP */
+        .incident-card { margin-top: 0rem; }
+        .incident-table { width: 100%; border-collapse: collapse; margin-top: 1.2rem; text-align: left; }
+        .incident-table th { color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.75rem; border-bottom: 1px solid var(--card-border); }
+        .incident-table td { padding: 1rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 0.95rem; color: #e2e8f0; }
+        
+        .btn-view { background: var(--accent-gradient); color: white; border: none; padding: 6px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2); }
+        .btn-view:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); }
+        
+        .badge-danger { background: rgba(239, 68, 68, 0.12); color: var(--accent-red); padding: 5px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; border: 1px solid rgba(239, 68, 68, 0.2); letter-spacing: 0.5px; }
+
+        /* 🔥 POPUP THEATER MODAL WINDOW */
+        .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(2, 4, 10, 0.85); backdrop-filter: blur(12px); align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-content { background: #0b0f19; border: 1px solid rgba(255,255,255,0.08); padding: 1.5rem; border-radius: 24px; width: 90%; max-width: 800px; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); }
+        .close-modal { position: absolute; top: -15px; right: -15px; font-size: 1.5rem; width: 36px; height: 36px; background: #1e293b; color: #fff; border-radius: 50%; border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+        .close-modal:hover { background: var(--accent-red); transform: scale(1.1); }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Hệ Thống Phân Tích Hành Vi Đa Nhiệm V3.3</h1>
+        <h1>Hệ Thống Phân Tích Hành Vi Đa Nhiệm V5.0</h1>
     </header>
 
     <div class="container">
@@ -78,7 +100,7 @@
 
             <div class="form-group">
                 <label>Địa chỉ Ngrok / Cloudflare URL Backend</label>
-                <input type="text" id="server-url" placeholder="https://...trycloudflare.com" onchange="loadClipsDynamically()">
+                <input type="text" id="server-url" placeholder="https://...trycloudflare.com" onchange="initSystemSync()">
             </div>
 
             <div class="form-group">
@@ -118,21 +140,50 @@
             <button class="btn-activate" id="btn-activate"><span>KÍCH HOẠT HỆ THỐNG</span></button>
         </div>
 
-        <div class="card monitor-screen">
-            <div class="status-indicator" id="status-indicator">
-                <div class="led-active"></div>
-                <span style="color: #fff; letter-spacing: 1px;">AI STREAMING</span>
+        <div class="main-content">
+            <div class="card monitor-screen">
+                <div class="status-indicator" id="status-indicator">
+                    <div class="led-active"></div>
+                    <span style="color: #fff; letter-spacing: 1px;">AI STREAMING</span>
+                </div>
+                <div id="placeholder" style="text-align: center; color: var(--text-dim);">
+                    <h2>MÀN HÌNH ĐIỀU KHIỂN</h2>
+                    <p style="margin-top: 5px;">Hệ thống sẵn sàng tiếp nhận luồng dữ liệu</p>
+                </div>
+                <img id="video-feed" src="" alt="Live Feed" />
             </div>
-            <div id="placeholder" style="text-align: center; color: var(--text-dim);">
-                <h2>MÀN HÌNH ĐIỀU KHIỂN</h2>
-                <p style="margin-top: 5px;">Hệ thống sẵn sàng tiếp nhận luồng dữ liệu</p>
+
+            <div class="card incident-card">
+                <div class="card-title">Nhật ký sự cố Hộp Đen (Blackbox Records)</div>
+                <table class="incident-table">
+                    <thead>
+                        <tr>
+                            <th>Thời Gian Sự Cố (Báo Cáo)</th>
+                            <th>Phân Loại Thừa Hành</th>
+                            <th>Hộp Đen Vật Lý (.MP4)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="incident-tbody">
+                        <tr>
+                            <td colspan="3" style="text-align: center; color: var(--text-dim); padding: 2rem;">Chưa cấu hình URL kết nối Backend</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <img id="video-feed" src="" alt="Live Feed" />
+        </div>
+    </div>
+
+    <div id="video-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="card-title" id="modal-title" style="margin-bottom: 1rem; font-size: 1rem;">Xem lại clip sự cố hộp đen</div>
+            <video id="modal-video" controls autoplay style="width: 100%; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); bg: #000;"></video>
         </div>
     </div>
 
     <script>
         let currentMode = 'live';
+        let incidentTimer = null;
 
         function switchMode(mode) {
             currentMode = mode;
@@ -142,29 +193,36 @@
             if(mode === 'demo') loadClipsDynamically();
         }
 
+        // Đồng bộ nạp dữ liệu toàn cục
+        function initSystemSync() {
+            loadClipsDynamically();
+            loadIncidentsDynamically();
+            
+            // Xóa bộ hẹn giờ cũ nếu có, kích hoạt chu kỳ 5 giây tự động quét Hộp Đen
+            if(incidentTimer) clearInterval(incidentTimer);
+            incidentTimer = setInterval(loadIncidentsDynamically, 5000);
+        }
+
         async function loadClipsDynamically() {
             const serverUrl = document.getElementById('server-url').value.trim();
             if (!serverUrl) return;
-            
             const cleanUrl = serverUrl.replace(/\/$/, "");
             const selectEl = document.getElementById('clip-select');
             
             try {
                 const response = await fetch(`${cleanUrl}/list-clips`);
                 const data = await response.json();
-                
                 selectEl.innerHTML = ''; 
                 
                 const friendlyNames = {
                     "bao_luc_hoc_duong": "⚔️ BẠO LỰC HỌC ĐƯỜNG",
-                    "hoc_sinh_hoc_bai": "📚 HÀNH VI LỚP HỌC",
+                    "hoc_sing_hoc_bai": "📚 HÀNH VI LỚP HỌC",
                     "te_nga": "🚨 TÉ NGÃ LỚP HỌC"
                 };
 
                 for (const [folder, files] of Object.entries(data)) {
                     const group = document.createElement('optgroup');
                     group.label = friendlyNames[folder] || folder.toUpperCase();
-                    
                     files.forEach(file => {
                         const option = document.createElement('option');
                         option.value = `${folder}/${file}`;
@@ -174,10 +232,73 @@
                     selectEl.appendChild(group);
                 }
             } catch (err) {
-                console.error("Lỗi quét kho dữ liệu clip:", err);
+                console.error("Lỗi quét dữ liệu clips:", err);
             }
         }
 
+        // 🔥 HÀM MỚI CHÍ MẠNG: THẦ SƯU TẬP HỘP ĐEN TỪ RASPBERRY PI 5
+        async function loadIncidentsDynamically() {
+            const serverUrl = document.getElementById('server-url').value.trim();
+            if (!serverUrl) return;
+            const cleanUrl = serverUrl.replace(/\/$/, "");
+            const tbody = document.getElementById('incident-tbody');
+            
+            try {
+                const response = await fetch(`${cleanUrl}/list-incidents`);
+                const files = await response.json();
+                
+                tbody.innerHTML = '';
+                if (!files || files.length === 0 || files.ERROR_LOG) {
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-dim); padding: 1.5rem;">📁 Hộp đen trống (Chưa ghi nhận sự cố thực tế từ Cam Live)</td></tr>`;
+                    return;
+                }
+
+                files.forEach(file => {
+                    // Trích xuất mốc UNIX từ tên: incident_17189123.mp4 -> 17189123
+                    const unixString = file.replace('incident_', '').replace('.mp4', '');
+                    const timestamp = parseInt(unixString) * 1000;
+                    let timeFormatted = "Bất định";
+                    
+                    if (!isNaN(timestamp)) {
+                        const d = new Date(timestamp);
+                        timeFormatted = d.toLocaleTimeString('vi-VN') + ' | ' + d.toLocaleDateString('vi-VN');
+                    }
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight: 600; color: #f1f5f9;">⏱️ ${timeFormatted}</td>
+                        <td><span class="badge-danger">🚨 KHẨN CẤP (AI LIVE)</span></td>
+                        <td><button class="btn-view" onclick="playBlackbox('${cleanUrl}', '${file}', '${timeFormatted}')">▶ Xem Hộp Đen</button></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error("Lỗi đồng bộ danh sách hộp đen:", err);
+            }
+        }
+
+        // PHÁT VIDEO POPUP MODAL TỪ XA
+        function playBlackbox(serverUrl, filename, timeInfo) {
+            const modal = document.getElementById('video-modal');
+            const video = document.getElementById('modal-video');
+            document.getElementById('modal-title').textContent = `🎞️ Hộp đen sự cố ghi nhận lúc: ${timeInfo}`;
+            
+            // Chỉ định đường dẫn kho tĩnh tĩnh /incidents_repo đã mount trên Pi 5
+            video.src = `${serverUrl}/incidents_repo/${filename}`;
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.style.opacity = '1'; }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('video-modal');
+            const video = document.getElementById('modal-video');
+            video.pause();
+            video.src = "";
+            modal.style.opacity = '0';
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+
+        // TRIGGER KÍCH HOẠT HỆ THỐNG AI STREAMING
         document.getElementById('btn-activate').addEventListener('click', function() {
             const serverUrl = document.getElementById('server-url').value.trim();
             if (!serverUrl) {
@@ -197,8 +318,6 @@
             document.getElementById('status-indicator').classList.add('active');
             
             const cleanUrl = serverUrl.replace(/\/$/, "");
-            
-            // 🔥 VÁ LỖI LỲ LUỒNG: Cấy chặt đuôi timestamp mã số nhảy động _t để ép Cloudflare bẻ gãy bộ nhớ đệm Cache
             let streamUrl = `${cleanUrl}/video-feed?mode=${currentMode}&check_nga=${checkNga}&check_baoluc=${checkBaoluc}&check_taptruong=${checkTaptruong}&name=${encodeURIComponent(receiver)}&msg=${encodeURIComponent(message)}&_t=${new Date().getTime()}`;
             
             if (currentMode === 'demo') {
@@ -208,23 +327,14 @@
                 streamUrl += `&clip_type=${parts[0]}&clip_name=${parts[1]}`;
             }
 
-            // ========================================================
-            // 🔥 BIỆN PHÁP PHÁ XÍCH LUỒNG STREAM ĐƠ CỨNG (DOM RECYCLING)
-            // ========================================================
             const videoEl = document.getElementById('video-feed');
-            
-            // 1. Gán link rỗng cắt kết nối Socket hiện tại ngay lập tức
             videoEl.src = ""; 
             
-            // 2. Clone nguyên bản thẻ ảnh mới để gọt sạch tàn dư cache ngầm của trình duyệt
             const newVideoEl = videoEl.cloneNode(true);
             newVideoEl.src = streamUrl;
             newVideoEl.style.display = 'block';
-            
-            // 3. Thực hiện tráo thẻ mới đè lên vị trí thẻ cũ trên cây DOM giao diện Vercel
             videoEl.parentNode.replaceChild(newVideoEl, videoEl);
             
-            // 4. Kích hoạt hiệu ứng hiển thị căng đét mượt mà
             setTimeout(() => { newVideoEl.style.opacity = '1'; }, 50);
         });
 
@@ -232,7 +342,7 @@
             const savedUrl = localStorage.getItem('SAVED_URL_V3');
             if (savedUrl) {
                 document.getElementById('server-url').value = savedUrl;
-                loadClipsDynamically();
+                initSystemSync();
             }
         });
     </script>
