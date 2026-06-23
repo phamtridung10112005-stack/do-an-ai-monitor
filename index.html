@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Intelligent Security Control Panel | Enterprise V8.0</title>
+    <title>AI Intelligent Security Control Panel | Enterprise V8.5</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -45,10 +45,6 @@
         
         input, select, textarea { width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); color: var(--text-main); padding: 1rem; font-size: 0.95rem; border-radius: 14px; outline: none; transition: all 0.3s ease; }
         input:focus, select:focus, textarea:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15); }
-        input:disabled, textarea:disabled { opacity: 0.3; cursor: not-allowed; background: rgba(255,255,255,0.01); }
-
-        select optgroup { background-color: #0f172a !important; color: #3b82f6 !important; font-weight: 700; font-size: 0.9rem; }
-        select option { background-color: #030712 !important; color: #f8fafc !important; padding: 0.5rem; }
 
         .checkbox-group { display: grid; grid-template-columns: 1fr; gap: 0.75rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 14px; border: 1px solid var(--card-border); }
         .checkbox-item { display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--text-main); font-weight: 500; font-size: 0.95rem; }
@@ -73,8 +69,8 @@
         .incident-table th { color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.75rem; border-bottom: 1px solid var(--card-border); }
         .incident-table td { padding: 1rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 0.95rem; color: #e2e8f0; }
         
-        .btn-view { background: var(--accent-gradient); color: white; border: none; padding: 6px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2); }
-        .btn-view:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); }
+        .btn-view { background: var(--accent-gradient); color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.8rem; transition: all 0.2s ease; margin-right: 4px; }
+        .btn-view:hover { transform: translateY(-1px); }
         
         .badge-danger { background: rgba(239, 68, 68, 0.12); color: var(--accent-red); padding: 5px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; border: 1px solid rgba(239, 68, 68, 0.2); letter-spacing: 0.5px; }
         .badge-warning { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); padding: 5px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; }
@@ -96,7 +92,7 @@
 <body>
 
     <header>
-        <h1>Hệ Thống Phân Tích Hành Vi An Ninh Lớp Học V8.0</h1>
+        <h1>Hệ Thống Phân Tích Hành Vi An Ninh Lớp Học V8.5</h1>
     </header>
 
     <div class="container">
@@ -133,20 +129,10 @@
 
             <div class="form-group">
                 <label for="alert-gateway">Cổng nhận cảnh báo sự cố</label>
-                <select id="alert-gateway" onchange="toggleGatewayFields()">
-                    <option value="zalo">💬 Zalo Web Automation (Playwright)</option>
+                <select id="alert-gateway">
                     <option value="discord">🎮 Discord Webhook Gateway (API)</option>
+                    <option value="zalo">💬 Zalo Web (Lưu trữ bằng chứng)</option>
                 </select>
-            </div>
-
-            <div class="form-group">
-                <label for="zalo-receiver">Người nhận Zalo</label>
-                <input type="text" id="zalo-receiver" placeholder="Kiệt Tày" value="Kiệt Tày">
-            </div>
-
-            <div class="form-group">
-                <label for="zalo-message">Nội dung tin nhắn sự cố</label>
-                <textarea id="zalo-message" placeholder="Hệ thống phát hiện sự cố khẩn cấp!">Hệ thống phát hiện sự cố khẩn cấp!</textarea>
             </div>
 
             <button class="btn-activate" id="btn-activate"><span>KÍCH HOẠT HỆ THỐNG</span></button>
@@ -172,7 +158,7 @@
                         <tr>
                             <th>Thời Gian Ghi Nhận</th>
                             <th>Phân Loại Hành Vi</th>
-                            <th>Hộp Đen Hệ Thống (.MP4)</th>
+                            <th>Thao Tác Quản Lý</th>
                         </tr>
                     </thead>
                     <tbody id="incident-tbody">
@@ -189,11 +175,11 @@
         <div class="modal-content">
             <span class="close-modal" onclick="closeOtpModal()">&times;</span>
             <div class="card-title" style="font-size: 1.1rem; color: var(--accent-gold);">Cổng Bảo Mật 2 Lớp (2FA Edge Gateway)</div>
-            <p style="font-size: 0.9rem; color: var(--text-dim); line-height: 1.4;">Hệ thống yêu cầu xác thực OTP từ Admin để nhả luồng dữ liệu thật. Mã bảo mật sẽ nổ tinh tinh về Discord Bot.</p>
+            <p style="font-size: 0.9rem; color: var(--text-dim); line-height: 1.4;">Yêu cầu xác thực OTP từ Admin để nhả luồng dữ liệu thật. Mã bảo mật sẽ bắn về Discord Bot. Khi lấy mã mới thiết bị cũ sẽ bị huỷ phiên tức thì.</p>
             
             <div class="form-group" style="margin-top: 0.5rem;">
                 <label for="otp-input">Mã số xác thực 4 chữ số</label>
-                <input type="text" id="otp-input" placeholder="Nhập mã gồm 4 số" maxlength="4" style="text-align: center; font-size: 1.2rem; font-weight: 700; letter-spacing: 4px; color: var(--accent-gold);">
+                <input type="text" id="otp-input" placeholder="Nhập mã" maxlength="4" style="text-align: center; font-size: 1.2rem; font-weight: 700; letter-spacing: 4px; color: var(--accent-gold);">
             </div>
 
             <div class="otp-btn-container">
@@ -227,14 +213,6 @@
         }
         const myDeviceUUID = getOrCreateDeviceUUID();
 
-        // 🔥 TỰ ĐỘNG ĐÓNG BĂNG Ô NHẬP ZALO KHI CHỌN CỔNG DISCORD TỐI ƯU UX
-        function toggleGatewayFields() {
-            const gateway = document.getElementById('alert-gateway').value;
-            const isDiscord = (gateway === 'discord');
-            document.getElementById('zalo-receiver').disabled = isDiscord;
-            document.getElementById('zalo-message').disabled = isDiscord;
-        }
-
         function switchMode(mode) {
             currentMode = mode;
             document.getElementById('btn-mode-live').classList.toggle('active', mode === 'live');
@@ -267,7 +245,6 @@
                 };
 
                 for (const [folder, files] of Object.entries(data)) {
-                    if (folder === "hoc_sing_hoc_bai") continue; 
                     const group = document.createElement('optgroup');
                     group.label = friendlyNames[folder] || folder.toUpperCase();
                     files.forEach(file => {
@@ -315,20 +292,49 @@
 
                     let badgeHTML = '';
                     if (cleanName.includes('te_nga')) {
-                        badgeHTML = `<span class="badge-danger">🚨 TÉ NGÃ CHẤN THƯƠNG</span>`;
+                        badgeHTML = `<span class="badge-danger">🚨 TÉ NGÃ</span>`;
                     } else if (cleanName.includes('bao_luc')) {
-                        badgeHTML = `<span class="badge-warning">⚔️ XUNG ĐỘT BẠO LỰC</span>`;
+                        badgeHTML = `<span class="badge-warning">⚔️ BẠO LỰC</span>`;
                     }
 
                     const tr = document.createElement('tr');
+                    // 🔥 THÊM 2 CHỨC NĂNG: XUẤT FILE (DOWNLOAD) VÀ XÓA FILE KHẨN CẤP
                     tr.innerHTML = `
                         <td style="font-weight: 600; color: #f1f5f9;">⏱️ ${timeFormatted}</td>
                         <td>${badgeHTML}</td>
-                        <td><button class="btn-view" onclick="playBlackbox('${cleanUrl}', '${file}', '${timeFormatted}')">▶ Xem Hộp Đen</button></td>
+                        <td>
+                            <button class="btn-view" style="background: var(--accent-gradient);" onclick="playBlackbox('${cleanUrl}', '${file}', '${timeFormatted}')">▶ Xem</button>
+                            <button class="btn-view" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="exportBlackbox('${cleanUrl}', '${file}')">📥 Xuất</button>
+                            <button class="btn-view" style="background: linear-gradient(135deg, #ef4444, #dc2626);" onclick="deleteBlackbox('${cleanUrl}', '${file}')">🗑️ Xóa</button>
+                        </td>
                     `;
                     tbody.appendChild(tr);
                 });
             } catch (err) { console.error("Lỗi đồng bộ danh sách hộp đen:", err); }
+        }
+
+        // 🔥 FUNCTION XUẤT CLIP HỘP ĐEN (DOWNLOAD FILE THÔ)
+        function exportBlackbox(serverUrl, filename) {
+            const downloadUrl = `${serverUrl}/incidents_repo/${filename}`;
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // 🔥 FUNCTION XÓA FILE HỘP ĐEN KHỎI PHẦN CỨNG BIÊN
+        async function deleteBlackbox(serverUrl, filename) {
+            if(!confirm(`Xác nhận xóa vĩnh viễn tệp hộp đen: ${filename}?`)) return;
+            try {
+                const res = await fetch(`${serverUrl}/delete-incident?filename=${filename}&device_uuid=${myDeviceUUID}`);
+                const data = await res.json();
+                if(res.ok) {
+                    alert('🗑️ Đã xóa file thành công khỏi bộ nhớ Pi 5!');
+                    loadIncidentsDynamically();
+                } else { alert('❌ Không có quyền xóa: ' + data.detail); }
+            } catch(e) { alert('Lỗi kết nối API xóa dữ liệu!'); }
         }
 
         function playBlackbox(serverUrl, filename, timeInfo) {
@@ -402,17 +408,13 @@
             const serverUrl = document.getElementById('server-url').value.trim();
             const checkNga = document.getElementById('chk-nga').checked;
             const checkBaoluc = document.getElementById('chk-baoluc').checked;
-            const gateway = document.getElementById('alert-gateway').value; // Bốc giá trị cổng nhận thông báo
+            const gateway = document.getElementById('alert-gateway').value;
             
-            let receiver = document.getElementById('zalo-receiver').value.trim() || "Kiệt Tày";
-            let message = document.getElementById('zalo-message').value.trim() || "Phát hiện sự cố khẩn cấp!";
-
             document.getElementById('placeholder').style.display = 'none';
             document.getElementById('status-indicator').classList.add('active');
             
             const cleanUrl = serverUrl.replace(/\/$/, "");
-            // 🔥 NỐI ĐUÔI THAM SỐ ALERT_GATEWAY ĐỂ BACKEND BIẾT ĐƯỜNG ĐIỀU PHỐI TIN NHẮN
-            let streamUrl = `${cleanUrl}/video-feed?mode=${currentMode}&check_nga=${checkNga}&check_baoluc=${checkBaoluc}&name=${encodeURIComponent(receiver)}&msg=${encodeURIComponent(message)}&alert_gateway=${gateway}&device_uuid=${myDeviceUUID}&_t=${new Date().getTime()}`;
+            let streamUrl = `${cleanUrl}/video-feed?mode=${currentMode}&check_nga=${checkNga}&check_baoluc=${checkBaoluc}&alert_gateway=${gateway}&device_uuid=${myDeviceUUID}&_t=${new Date().getTime()}`;
             
             if (currentMode === 'demo') {
                 const clipPath = document.getElementById('clip-select').value;
@@ -435,7 +437,6 @@
             if (savedUrl) {
                 document.getElementById('server-url').value = savedUrl;
                 initSystemSync();
-                toggleGatewayFields();
             }
         });
     </script>
