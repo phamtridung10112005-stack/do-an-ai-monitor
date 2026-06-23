@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Multi-Task Control Panel | Twin Blackbox V5.5</title>
+    <title>AI Intelligent Security Control Panel | Gateway V7.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -17,6 +17,7 @@
             --accent-glow: rgba(59, 130, 246, 0.5);
             --accent-green: #10b981;
             --accent-red: #ef4444;
+            --accent-gold: #f59e0b;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -77,18 +78,28 @@
         
         .badge-danger { background: rgba(239, 68, 68, 0.12); color: var(--accent-red); padding: 5px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; border: 1px solid rgba(239, 68, 68, 0.2); letter-spacing: 0.5px; }
         .badge-warning { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); padding: 5px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; }
+        .badge-locked { background: rgba(148, 163, 184, 0.1); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.2); padding: 5px 12px; border-radius: 8px; font-weight: 600; font-size: 0.8rem; }
 
-        /* THEATER MODAL WINDOW */
+        /* THEATER MODAL WINDOW & OTP GATEWAY MODAL */
         .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(2, 4, 10, 0.85); backdrop-filter: blur(12px); align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
-        .modal-content { background: #0b0f19; border: 1px solid rgba(255,255,255,0.08); padding: 1.5rem; border-radius: 24px; width: 90%; max-width: 800px; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); }
-        .close-modal { position: absolute; top: -15px; right: -15px; font-size: 1.5rem; width: 36px; height: 36px; background: #1e293b; color: #fff; border-radius: 50%; border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
-        .close-modal:hover { background: var(--accent-red); transform: scale(1.1); }
+        .modal-content { background: #0b0f19; border: 1px solid rgba(255,255,255,0.08); padding: 2rem; border-radius: 24px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 1.5rem; }
+        .close-modal { position: absolute; top: 15px; right: 15px; font-size: 1.5rem; width: 32px; height: 32px; background: #1e293b; color: #fff; border-radius: 50%; border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+        .close-modal:hover { background: var(--accent-red); transform: scale(1.05); }
+
+        /* KIỂU DÁNG ĐẶC BIỆT CHO BẢNG MÃ OTP BẢO MẬT */
+        .otp-btn-container { display: flex; gap: 12px; margin-top: 0.5rem; }
+        .btn-otp-request { flex: 1; padding: 0.9rem; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--card-border); border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-otp-request:hover { background: rgba(255,255,255,0.1); border-color: var(--text-dim); }
+        .btn-otp-verify { flex: 1; padding: 0.9rem; background: var(--accent-gradient); color: #fff; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2); }
+        .btn-otp-verify:hover { transform: translateY(-1px); box-shadow: 0 6px 15px rgba(139, 92, 246, 0.4); }
+        
+        .device-badge-info { font-size: 0.75rem; color: var(--text-dim); background: rgba(0,0,0,0.3); padding: 8px 12px; border-radius: 10px; border: 1px solid var(--card-border); word-break: break-all; text-align: center; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Hệ Thống Phân Tích Hành Vi Đa Nhiệm V5.5</h1>
+        <h1>Hệ Thống Phân Tích Hành Vi An Ninh Lớp Học V7.0</h1>
     </header>
 
     <div class="container">
@@ -96,8 +107,8 @@
             <div class="card-title">Cấu hình Hệ thống</div>
 
             <div class="form-group">
-                <label>Địa chỉ Ngrok / Cloudflare URL Backend</label>
-                <input type="text" id="server-url" placeholder="https://...trycloudflare.com" onchange="initSystemSync()">
+                <label>Địa chỉ IP Local / Ngrok Server Backend</label>
+                <input type="text" id="server-url" placeholder="Ví dụ: http://192.168.1.XX:8000" onchange="initSystemSync()">
             </div>
 
             <div class="form-group">
@@ -116,22 +127,11 @@
             </div>
 
             <div class="form-group">
-                <label>Bộ lọc phân luồng AI</label>
+                <label>Bộ lọc phân luồng AI An Ninh</label>
                 <div class="checkbox-group">
                     <label class="checkbox-item"><input type="checkbox" id="chk-nga" checked> 🚨 Nhận diện Ngã</label>
                     <label class="checkbox-item"><input type="checkbox" id="chk-baoluc" checked> ⚔️ Nhận diện Bạo lực</label>
-                    <label class="checkbox-item"><input type="checkbox" id="chk-taptruong" checked> 📚 Mất tập trung lớp học</label>
                 </div>
-            </div>
-
-            <div class="form-group">
-                <label for="zalo-receiver">Người nhận Zalo</label>
-                <input type="text" id="zalo-receiver" placeholder="Kiệt Tày">
-            </div>
-
-            <div class="form-group">
-                <label for="zalo-message">Nội dung tin nhắn</label>
-                <textarea id="zalo-message" placeholder="Hệ thống phát hiện sự cố khẩn cấp!"></textarea>
             </div>
 
             <button class="btn-activate" id="btn-activate"><span>KÍCH HOẠT HỆ THỐNG</span></button>
@@ -151,7 +151,7 @@
             </div>
 
             <div class="card">
-                <div class="card-title">Nhật ký sự cố Hộp Đen Khẩn Cấp (Blackbox)</div>
+                <div class="card-title">Nhật ký sự cố Hộp Đen Khẩn Cấp (Blackbox Ledger)</div>
                 <table class="incident-table">
                     <thead>
                         <tr>
@@ -170,8 +170,28 @@
         </div>
     </div>
 
-    <div id="video-modal" class="modal">
+    <div id="otp-modal" class="modal">
         <div class="modal-content">
+            <span class="close-modal" onclick="closeOtpModal()">&times;</span>
+            <div class="card-title" style="font-size: 1.1rem; color: var(--accent-gold);">Cổng Bảo Mật 2 Lớp (2FA Edge Gateway)</div>
+            <p style="font-size: 0.9rem; color: var(--text-dim); line-height: 1.4;">Bạn đang yêu cầu kết nối luồng ảnh trực tiếp từ Camera IP hoặc Hộp đen dữ liệu thật. Vui lòng xác thực quyền sở hữu Admin.</p>
+            
+            <div class="form-group" style="margin-top: 0.5rem;">
+                <label for="otp-input">Mã số xác thực 4 chữ số</label>
+                <input type="text" id="otp-input" placeholder="Nhập mã gồm 4 số (Ví dụ: 8899)" maxlength="4" style="text-align: center; font-size: 1.2rem; font-weight: 700; letter-spacing: 4px; color: var(--accent-gold);">
+            </div>
+
+            <div class="otp-btn-container">
+                <button class="btn-otp-request" onclick="triggerRequestOtp()">🔄 CẤP MỚI MÃ</button>
+                <button class="btn-otp-verify" onclick="triggerVerifyOtp()">🔐 NHẬP LUÔN</button>
+            </div>
+
+            <div class="device-badge-info" id="device-uuid-display">Đang đọc định danh thiết bị biên...</div>
+        </div>
+    </div>
+
+    <div id="video-modal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
             <span class="close-modal" onclick="closeModal()">&times;</span>
             <div class="card-title" id="modal-title" style="margin-bottom: 1rem; font-size: 1rem;">Xem lại clip sự cố hộp đen</div>
             <video id="modal-video" controls autoplay style="width: 100%; border-radius: 14px; border: 1px solid rgba(255,255,255,0.1); background: #000;"></video>
@@ -181,6 +201,17 @@
     <script>
         let currentMode = 'live';
         let incidentTimer = null;
+
+        // --- 🤖 THIẾT LẬP DẤU VÂN TAY TRÌNH DUYỆT ĐỘC NHẤT ĐỂ RÀNG BUỘC OTP (ANTI-TOKEN SHARING) ---
+        function getOrCreateDeviceUUID() {
+            let uuid = localStorage.getItem('device_uuid_v7');
+            if (!uuid) {
+                uuid = 'UUID-' + Math.random().toString(36).substring(2, 10).toUpperCase() + '-' + Date.now().toString(36).toUpperCase();
+                localStorage.setItem('device_uuid_v7', uuid);
+            }
+            return uuid;
+        }
+        const myDeviceUUID = getOrCreateDeviceUUID();
 
         function switchMode(mode) {
             currentMode = mode;
@@ -209,12 +240,12 @@
                 selectEl.innerHTML = ''; 
                 
                 const friendlyNames = {
-                    "bao_luc_hoc_duong": "⚔️ BẠO LỰC HỌC ĐƯỜNG",
-                    "hoc_sing_hoc_bai": "📚 HÀNH VI LỚP HỌC",
-                    "te_nga": "🚨 TÉ NGÃ LỚP HỌC"
+                    "bao_luc_hoc_duong": "⚔️ XUNG ĐỘT BẠO LỰC MÔ PHỎNG",
+                    "te_nga": "🚨 SỰ CỐ TÉ NGÃ MÔ PHỎNG"
                 };
 
                 for (const [folder, files] of Object.entries(data)) {
+                    if (folder === "hoc_sing_hoc_bai") continue; // Dọn dẹp module độ tập trung cũ
                     const group = document.createElement('optgroup');
                     group.label = friendlyNames[folder] || folder.toUpperCase();
                     files.forEach(file => {
@@ -226,11 +257,10 @@
                     selectEl.appendChild(group);
                 }
             } catch (err) {
-                console.error("Lỗi nạp kho video:", err);
+                console.error("Lỗi nạp kho video demo:", err);
             }
         }
 
-        // 🔥 CHƯƠNG TRÌNH PHÂN PHỐI TWIN-BLACKBOX: TÁCH BIỆT RÕ RÀNG NGÃ VÀ BẠO LỰC
         async function loadIncidentsDynamically() {
             const serverUrl = document.getElementById('server-url').value.trim();
             if (!serverUrl) return;
@@ -238,12 +268,18 @@
             const tbody = document.getElementById('incident-tbody');
             
             try {
-                const response = await fetch(`${cleanUrl}/list-incidents`);
-                const files = await response.json();
+                // Đính kèm vân tay thiết bị khi xin danh sách hộp đen
+                const response = await fetch(`${cleanUrl}/list-incidents?device_uuid=${myDeviceUUID}`);
                 
+                if (response.status === 401 || response.status === 403) {
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--accent-gold); padding: 1.5rem;">🔒 Dữ liệu Hộp Đen đang Khóa. Vui lòng kích hoạt luồng để xác thực thiết bị!</td></tr>`;
+                    return;
+                }
+                
+                const files = await response.json();
                 tbody.innerHTML = '';
-                if (!files || files.length === 0 || files.ERROR_LOG) {
-                    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-dim); padding: 1.5rem;">📁 Hộp đen trống (Hệ thống sẵn sàng bọc dữ liệu ngã/bạo lực)</td></tr>`;
+                if (!files || files.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-dim); padding: 1.5rem;">📁 Hộp đen trống (Hệ thống sẵn sàng trích xuất sự cố)</td></tr>`;
                     return;
                 }
 
@@ -259,14 +295,13 @@
                         timeFormatted = d.toLocaleTimeString('vi-VN') + ' | ' + d.toLocaleDateString('vi-VN');
                     }
 
-                    // Đổ khuôn Badge màu sắc tách biệt hoàn toàn theo yêu cầu của ông
                     let badgeHTML = '';
                     if (cleanName.includes('te_nga')) {
                         badgeHTML = `<span class="badge-danger">🚨 TÉ NGÃ CHẤN THƯƠNG</span>`;
                     } else if (cleanName.includes('bao_luc')) {
                         badgeHTML = `<span class="badge-warning">⚔️ XUNG ĐỘT BẠO LỰC</span>`;
                     } else {
-                        badgeHTML = `<span class="badge-info" style="background: rgba(148,163,184,0.1); color: #94a3b8; border: 1px solid rgba(148,163,184,0.2); padding: 5px 12px; border-radius: 8px;">📁 FILE SỰ CỐ TẠM</span>`;
+                        badgeHTML = `<span class="badge-locked">📁 FILE SỰ CỐ TẠM</span>`;
                     }
 
                     const tr = document.createElement('tr');
@@ -299,23 +334,81 @@
             setTimeout(() => { modal.style.display = 'none'; }, 300);
         }
 
+        // --- 🔐 HÀNG LOẠT HÀM ĐIỀU PHỐI POP-UP VÀ KÍCH HOẠT THÀNH PHẦN OTP ---
+        function openOtpModal() {
+            const modal = document.getElementById('otp-modal');
+            document.getElementById('device-uuid-display').textContent = `VÂN TAY THIẾT BỊ: ${myDeviceUUID}`;
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.style.opacity = '1'; }, 10);
+        }
+
+        function closeOtpModal() {
+            const modal = document.getElementById('otp-modal');
+            modal.style.opacity = '0';
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+
+        async function triggerRequestOtp() {
+            const serverUrl = document.getElementById('server-url').value.trim();
+            const cleanUrl = serverUrl.replace(/\/$/, "");
+            try {
+                const res = await fetch(`${cleanUrl}/request-otp`);
+                const data = await res.json();
+                alert(data.message);
+            } catch(e) {
+                alert('Không thể kết nối Backend để xin cấp OTP!');
+            }
+        }
+
+        async function triggerVerifyOtp() {
+            const serverUrl = document.getElementById('server-url').value.trim();
+            const cleanUrl = serverUrl.replace(/\/$/, "");
+            const otpVal = document.getElementById('otp-input').value.trim();
+            if(!otpVal) { alert('Vui lòng điền mã số trước khi bấm nhập luôn!'); return; }
+
+            try {
+                const res = await fetch(`${cleanUrl}/verify-otp?otp=${otpVal}&device_uuid=${myDeviceUUID}`);
+                const data = await res.json();
+                if(res.ok) {
+                    alert('🎉 Xác thực thành công! Quyền xem luồng đã mở khóa trong 20 phút.');
+                    closeOtpModal();
+                    // Tiến hành nổ luồng Live ngay khi xác thực đúng
+                    executeCoreStreaming();
+                    loadIncidentsDynamically();
+                } else {
+                    alert('❌ Lỗi: ' + data.detail);
+                }
+            } catch(e) {
+                alert('Xác thực thất bại. Vui lòng kiểm tra cổng mạng kết nối!');
+            }
+        }
+
+        // --- 🎬 KÍCH HOẠT HỆ THỐNG XỬ LÝ ẢNH BIÊN ---
         document.getElementById('btn-activate').addEventListener('click', function() {
             const serverUrl = document.getElementById('server-url').value.trim();
             if (!serverUrl) { alert('Vui lòng nhập URL kết nối Server Backend!'); return; }
             localStorage.setItem('SAVED_URL_V3', serverUrl);
 
+            // Nếu chạy chế độ Live thật -> Gọi Hải quan OTP kiểm tra vân tay trước
+            if (currentMode === 'live') {
+                openOtpModal();
+            } else {
+                // Chế độ demo mô phỏng được phép cho qua công khai tẹt ga
+                executeCoreStreaming();
+            }
+        });
+
+        function executeCoreStreaming() {
+            const serverUrl = document.getElementById('server-url').value.trim();
             const checkNga = document.getElementById('chk-nga').checked;
             const checkBaoluc = document.getElementById('chk-baoluc').checked;
-            const checkTaptruong = document.getElementById('chk-taptruong').checked;
             
-            let receiver = document.getElementById('zalo-receiver').value.trim() || "Kiệt Tày";
-            let message = document.getElementById('zalo-message').value.trim() || "Phát hiện sự cố khẩn cấp!";
-
             document.getElementById('placeholder').style.display = 'none';
             document.getElementById('status-indicator').classList.add('active');
             
             const cleanUrl = serverUrl.replace(/\/$/, "");
-            let streamUrl = `${cleanUrl}/video-feed?mode=${currentMode}&check_nga=${checkNga}&check_baoluc=${checkBaoluc}&check_taptruong=${checkTaptruong}&name=${encodeURIComponent(receiver)}&msg=${encodeURIComponent(message)}&_t=${new Date().getTime()}`;
+            // Cấu hình URL nhả frame có gắn thêm Device UUID để Pi 5 đối chiếu quyền sở hữu thời gian thực
+            let streamUrl = `${cleanUrl}/video-feed?mode=${currentMode}&check_nga=${checkNga}&check_baoluc=${checkBaoluc}&device_uuid=${myDeviceUUID}&_t=${new Date().getTime()}`;
             
             if (currentMode === 'demo') {
                 const clipPath = document.getElementById('clip-select').value;
@@ -331,7 +424,7 @@
             newVideoEl.style.display = 'block';
             videoEl.parentNode.replaceChild(newVideoEl, videoEl);
             setTimeout(() => { newVideoEl.style.opacity = '1'; }, 50);
-        });
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedUrl = localStorage.getItem('SAVED_URL_V3');
