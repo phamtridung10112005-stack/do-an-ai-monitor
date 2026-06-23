@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Intelligent Security Control Panel | Enterprise V8.5</title>
+    <title>AI Intelligent Security Control Panel | Concurrency V8.9</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -65,6 +65,7 @@
         #video-feed { width: 100%; height: 100%; object-fit: contain; display: none; opacity: 0; transition: opacity 0.5s ease; }
         .hidden { display: none !important; }
 
+        /* CSS HỘP ĐEN NHẬT KÝ */
         .incident-table { width: 100%; border-collapse: collapse; margin-top: 1.2rem; text-align: left; }
         .incident-table th { color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.75rem; border-bottom: 1px solid var(--card-border); }
         .incident-table td { padding: 1rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 0.95rem; color: #e2e8f0; }
@@ -75,6 +76,7 @@
         .badge-danger { background: rgba(239, 68, 68, 0.12); color: var(--accent-red); padding: 5px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; border: 1px solid rgba(239, 68, 68, 0.2); letter-spacing: 0.5px; }
         .badge-warning { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); padding: 5px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; }
 
+        /* MODAL POPUP SYSTEM */
         .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(2, 4, 10, 0.85); backdrop-filter: blur(12px); align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
         .modal-content { background: #0b0f19; border: 1px solid rgba(255,255,255,0.08); padding: 2rem; border-radius: 24px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 1.5rem; }
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 1.5rem; width: 32px; height: 32px; background: #1e293b; color: #fff; border-radius: 50%; border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
@@ -92,7 +94,7 @@
 <body>
 
     <header>
-        <h1>Hệ Thống Phân Tích Hành Vi An Ninh Lớp Học V8.5</h1>
+        <h1>Hệ Thống Phân Tích Hành Vi An Ninh Lớp Học V8.9</h1>
     </header>
 
     <div class="container">
@@ -131,7 +133,7 @@
                 <label for="alert-gateway">Cổng nhận cảnh báo sự cố</label>
                 <select id="alert-gateway">
                     <option value="discord">🎮 Discord Webhook Gateway (API)</option>
-                    <option value="zalo">💬 Zalo Web (Lưu trữ bằng chứng)</option>
+                    <option value="zalo">💬 Zalo Web (Lưu trữ bằng bằng chứng)</option>
                 </select>
             </div>
 
@@ -174,12 +176,12 @@
     <div id="otp-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeOtpModal()">&times;</span>
-            <div class="card-title" style="font-size: 1.1rem; color: var(--accent-gold);">Cổng Bảo Mật 2 Lớp (2FA Edge Gateway)</div>
-            <p style="font-size: 0.9rem; color: var(--text-dim); line-height: 1.4;">Yêu cầu xác thực OTP từ Admin để nhả luồng dữ liệu thật. Mã bảo mật sẽ bắn về Discord Bot. Khi lấy mã mới thiết bị cũ sẽ bị huỷ phiên tức thì.</p>
+            <div class="card-title" style="font-size: 1.1rem; color: var(--accent-gold);">Cổng Bảo Mật Đa Phiên (Concurrent Gateway)</div>
+            <p style="font-size: 0.9rem; color: var(--text-dim); line-height: 1.4;">Vui lòng xác thực mã OTP gửi về Discord của bạn. Mỗi trình duyệt nhập đúng sẽ sở hữu một phiên độc lập 20 phút, không làm ảnh hưởng lẫn nhau.</p>
             
             <div class="form-group" style="margin-top: 0.5rem;">
                 <label for="otp-input">Mã số xác thực 4 chữ số</label>
-                <input type="text" id="otp-input" placeholder="Nhập mã" maxlength="4" style="text-align: center; font-size: 1.2rem; font-weight: 700; letter-spacing: 4px; color: var(--accent-gold);">
+                <input type="text" id="otp-input" placeholder="Nhập mã số" maxlength="4" style="text-align: center; font-size: 1.2rem; font-weight: 700; letter-spacing: 4px; color: var(--accent-gold);">
             </div>
 
             <div class="otp-btn-container">
@@ -187,7 +189,7 @@
                 <button class="btn-otp-verify" onclick="triggerVerifyOtp()">🔐 NHẬP LUÔN</button>
             </div>
 
-            <div class="device-badge-info" id="device-uuid-display">Đang đọc định danh thiết bị biên...</div>
+            <div class="device-badge-info" id="session-status-display">TRẠNG THÁI PHIÊN: Chưa xác thực</div>
         </div>
     </div>
 
@@ -202,16 +204,6 @@
     <script>
         let currentMode = 'live';
         let incidentTimer = null;
-
-        function getOrCreateDeviceUUID() {
-            let uuid = localStorage.getItem('device_uuid_v7');
-            if (!uuid) {
-                uuid = 'UUID-' + Math.random().toString(36).substring(2, 10).toUpperCase() + '-' + Date.now().toString(36).toUpperCase();
-                localStorage.setItem('device_uuid_v7', uuid);
-            }
-            return uuid;
-        }
-        const myDeviceUUID = getOrCreateDeviceUUID();
 
         function switchMode(mode) {
             currentMode = mode;
@@ -258,16 +250,18 @@
             } catch (err) { console.error("Lỗi nạp kho video demo:", err); }
         }
 
+        // 🔥 THAY ĐỔI TOÀN DIỆN: Gửi session_token độc bản của máy này lên kiểm tra mảng RAM của Pi 5
         async function loadIncidentsDynamically() {
             const serverUrl = document.getElementById('server-url').value.trim();
             if (!serverUrl) return;
             const cleanUrl = serverUrl.replace(/\/$/, "");
             const tbody = document.getElementById('incident-tbody');
+            const currentToken = localStorage.getItem('session_token_v89'); // Lấy mã phiên riêng của máy này
             
             try {
-                const response = await fetch(`${cleanUrl}/list-incidents?device_uuid=${myDeviceUUID}`);
+                const response = await fetch(`${cleanUrl}/list-incidents?session_token=${currentToken || ''}`);
                 if (response.status === 401 || response.status === 403) {
-                    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--accent-gold); padding: 1.5rem;">🔒 Dữ liệu Hộp Đen đang Khóa. Vui lòng xác thực thiết bị Admin bằng OTP!</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--accent-gold); padding: 1.5rem;">🔒 Dữ liệu Hộp Đen đang Khóa. Vui lòng nhập OTP để mở khóa phiên làm việc!</td></tr>`;
                     return;
                 }
                 
@@ -298,7 +292,6 @@
                     }
 
                     const tr = document.createElement('tr');
-                    // 🔥 THÊM 2 CHỨC NĂNG: XUẤT FILE (DOWNLOAD) VÀ XÓA FILE KHẨN CẤP
                     tr.innerHTML = `
                         <td style="font-weight: 600; color: #f1f5f9;">⏱️ ${timeFormatted}</td>
                         <td>${badgeHTML}</td>
@@ -313,7 +306,6 @@
             } catch (err) { console.error("Lỗi đồng bộ danh sách hộp đen:", err); }
         }
 
-        // 🔥 FUNCTION XUẤT CLIP HỘP ĐEN (DOWNLOAD FILE THÔ)
         function exportBlackbox(serverUrl, filename) {
             const downloadUrl = `${serverUrl}/incidents_repo/${filename}`;
             const a = document.createElement('a');
@@ -324,11 +316,12 @@
             document.body.removeChild(a);
         }
 
-        // 🔥 FUNCTION XÓA FILE HỘP ĐEN KHỎI PHẦN CỨNG BIÊN
+        // 🔥 THAY ĐỔI THAM SỐ: Đính kèm session_token để cấp quyền xóa file trên RAM biên
         async function deleteBlackbox(serverUrl, filename) {
             if(!confirm(`Xác nhận xóa vĩnh viễn tệp hộp đen: ${filename}?`)) return;
+            const currentToken = localStorage.getItem('session_token_v89');
             try {
-                const res = await fetch(`${serverUrl}/delete-incident?filename=${filename}&device_uuid=${myDeviceUUID}`);
+                const res = await fetch(`${serverUrl}/delete-incident?filename=${filename}&session_token=${currentToken || ''}`);
                 const data = await res.json();
                 if(res.ok) {
                     alert('🗑️ Đã xóa file thành công khỏi bộ nhớ Pi 5!');
@@ -356,7 +349,8 @@
 
         function openOtpModal() {
             const modal = document.getElementById('otp-modal');
-            document.getElementById('device-uuid-display').textContent = `VÂN TAY THIẾT BỊ: ${myDeviceUUID}`;
+            const currentToken = localStorage.getItem('session_token_v89');
+            document.getElementById('session-status-display').textContent = currentToken ? `MÃ PHIÊN HIỆN TẠI: ${currentToken.substring(0,12)}...` : `TRẠNG THÁI PHIÊN: Chưa xác thực`;
             modal.style.display = 'flex';
             setTimeout(() => { modal.style.opacity = '1'; }, 10);
         }
@@ -377,6 +371,7 @@
             } catch(e) { alert('Không thể xin cấp OTP!'); }
         }
 
+        // 🔥 THAY ĐỔI CỐT LÕI: Đón lấy session_token từ backend trả về và lưu riêng vào LocalStorage của máy này
         async function triggerVerifyOtp() {
             const serverUrl = document.getElementById('server-url').value.trim();
             const cleanUrl = serverUrl.replace(/\/$/, "");
@@ -384,10 +379,11 @@
             if(!otpVal) { alert('Vui lòng điền mã số trước!'); return; }
 
             try {
-                const res = await fetch(`${cleanUrl}/verify-otp?otp=${otpVal}&device_uuid=${myDeviceUUID}`);
+                const res = await fetch(`${cleanUrl}/verify-otp?otp=${otpVal}`);
                 const data = await res.json();
                 if(res.ok) {
-                    alert('🎉 Xác thực thành công! Quyền truy cập mở khóa trong 20 phút.');
+                    alert('🎉 Xác thực thành công! Thiết bị của bạn đã mở khóa 1 phiên độc lập dài 20 phút.');
+                    localStorage.setItem('session_token_v89', data.session_token); // Lưu khóa phiên độc bản
                     closeOtpModal();
                     executeCoreStreaming();
                     loadIncidentsDynamically();
@@ -409,12 +405,14 @@
             const checkNga = document.getElementById('chk-nga').checked;
             const checkBaoluc = document.getElementById('chk-baoluc').checked;
             const gateway = document.getElementById('alert-gateway').value;
+            const currentToken = localStorage.getItem('session_token_v89'); // Triệu hồi khóa phiên riêng biệt
             
             document.getElementById('placeholder').style.display = 'none';
             document.getElementById('status-indicator').classList.add('active');
             
             const cleanUrl = serverUrl.replace(/\/$/, "");
-            let streamUrl = `${cleanUrl}/video-feed?mode=${currentMode}&check_nga=${checkNga}&check_baoluc=${checkBaoluc}&alert_gateway=${gateway}&device_uuid=${myDeviceUUID}&_t=${new Date().getTime()}`;
+            // 🔥 ĐỒNG BỘ PARAMETER STREAM: Đính kèm session_token thay cho định danh thiết bị cũ
+            let streamUrl = `${cleanUrl}/video-feed?mode=${currentMode}&check_nga=${checkNga}&check_baoluc=${checkBaoluc}&alert_gateway=${gateway}&session_token=${currentToken || ''}&_t=${new Date().getTime()}`;
             
             if (currentMode === 'demo') {
                 const clipPath = document.getElementById('clip-select').value;
