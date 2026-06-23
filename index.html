@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Intelligent Security Control Panel | Concurrency V8.9</title>
+    <title>AI Intelligent Security Control Panel | Master V9.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -46,6 +46,10 @@
         input, select, textarea { width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); color: var(--text-main); padding: 1rem; font-size: 0.95rem; border-radius: 14px; outline: none; transition: all 0.3s ease; }
         input:focus, select:focus, textarea:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15); }
 
+        /* 🔥 SỬA LỖI CHÍ MẠNG GIAO DIỆN: ÉP CỨNG MÀU CHO DROPDOWN LIST KHÔNG BỊ TRÙNG MÀU TRẮNG HỆ THỐNG */
+        select optgroup { background-color: #0b0f19 !important; color: #3b82f6 !important; font-weight: 700; font-size: 0.95rem; padding: 6px; }
+        select option { background-color: #0b0f19 !important; color: #f8fafc !important; font-weight: 500; padding: 10px; font-size: 0.95rem; }
+
         .checkbox-group { display: grid; grid-template-columns: 1fr; gap: 0.75rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 14px; border: 1px solid var(--card-border); }
         .checkbox-item { display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--text-main); font-weight: 500; font-size: 0.95rem; }
         .checkbox-item input { width: auto; cursor: pointer; accent-color: #8b5cf6; }
@@ -65,7 +69,6 @@
         #video-feed { width: 100%; height: 100%; object-fit: contain; display: none; opacity: 0; transition: opacity 0.5s ease; }
         .hidden { display: none !important; }
 
-        /* CSS HỘP ĐEN NHẬT KÝ */
         .incident-table { width: 100%; border-collapse: collapse; margin-top: 1.2rem; text-align: left; }
         .incident-table th { color: var(--text-dim); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 0.75rem; border-bottom: 1px solid var(--card-border); }
         .incident-table td { padding: 1rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 0.95rem; color: #e2e8f0; }
@@ -76,7 +79,6 @@
         .badge-danger { background: rgba(239, 68, 68, 0.12); color: var(--accent-red); padding: 5px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; border: 1px solid rgba(239, 68, 68, 0.2); letter-spacing: 0.5px; }
         .badge-warning { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); padding: 5px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; }
 
-        /* MODAL POPUP SYSTEM */
         .modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(2, 4, 10, 0.85); backdrop-filter: blur(12px); align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
         .modal-content { background: #0b0f19; border: 1px solid rgba(255,255,255,0.08); padding: 2rem; border-radius: 24px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 1.5rem; }
         .close-modal { position: absolute; top: 15px; right: 15px; font-size: 1.5rem; width: 32px; height: 32px; background: #1e293b; color: #fff; border-radius: 50%; border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
@@ -94,7 +96,7 @@
 <body>
 
     <header>
-        <h1>Hệ Thống Phân Tích Hành Vi An Ninh Lớp Học V8.9</h1>
+        <h1>Hệ Thống Phân Tích Hành Vi An Ninh Lớp Học V9.0</h1>
     </header>
 
     <div class="container">
@@ -135,6 +137,16 @@
                     <option value="discord">🎮 Discord Webhook Gateway (API)</option>
                     <option value="zalo">💬 Zalo Web (Lưu trữ bằng bằng chứng)</option>
                 </select>
+            </div>
+
+            <div class="form-group">
+                <label for="zalo-receiver">Người nhận Zalo</label>
+                <input type="text" id="zalo-receiver" placeholder="Kiệt Tày" value="Kiệt Tày">
+            </div>
+
+            <div class="form-group">
+                <label for="zalo-message">Nội dung tin nhắn sự cố</label>
+                <textarea id="zalo-message" placeholder="Hệ thống phát hiện sự cố khẩn cấp!">Hệ thống phát hiện sự cố khẩn cấp!</textarea>
             </div>
 
             <button class="btn-activate" id="btn-activate"><span>KÍCH HOẠT HỆ THỐNG</span></button>
@@ -250,13 +262,12 @@
             } catch (err) { console.error("Lỗi nạp kho video demo:", err); }
         }
 
-        // 🔥 THAY ĐỔI TOÀN DIỆN: Gửi session_token độc bản của máy này lên kiểm tra mảng RAM của Pi 5
         async function loadIncidentsDynamically() {
             const serverUrl = document.getElementById('server-url').value.trim();
             if (!serverUrl) return;
             const cleanUrl = serverUrl.replace(/\/$/, "");
             const tbody = document.getElementById('incident-tbody');
-            const currentToken = localStorage.getItem('session_token_v89'); // Lấy mã phiên riêng của máy này
+            const currentToken = localStorage.getItem('session_token_v89');
             
             try {
                 const response = await fetch(`${cleanUrl}/list-incidents?session_token=${currentToken || ''}`);
@@ -316,17 +327,15 @@
             document.body.removeChild(a);
         }
 
-        // 🔥 THAY ĐỔI THAM SỐ: Đính kèm session_token để cấp quyền xóa file trên RAM biên
         async function deleteBlackbox(serverUrl, filename) {
             if(!confirm(`Xác nhận xóa vĩnh viễn tệp hộp đen: ${filename}?`)) return;
             const currentToken = localStorage.getItem('session_token_v89');
             try {
                 const res = await fetch(`${serverUrl}/delete-incident?filename=${filename}&session_token=${currentToken || ''}`);
-                const data = await res.json();
                 if(res.ok) {
                     alert('🗑️ Đã xóa file thành công khỏi bộ nhớ Pi 5!');
                     loadIncidentsDynamically();
-                } else { alert('❌ Không có quyền xóa: ' + data.detail); }
+                } else { alert('❌ Không có quyền xóa dữ liệu!'); }
             } catch(e) { alert('Lỗi kết nối API xóa dữ liệu!'); }
         }
 
@@ -371,7 +380,6 @@
             } catch(e) { alert('Không thể xin cấp OTP!'); }
         }
 
-        // 🔥 THAY ĐỔI CỐT LÕI: Đón lấy session_token từ backend trả về và lưu riêng vào LocalStorage của máy này
         async function triggerVerifyOtp() {
             const serverUrl = document.getElementById('server-url').value.trim();
             const cleanUrl = serverUrl.replace(/\/$/, "");
@@ -383,7 +391,7 @@
                 const data = await res.json();
                 if(res.ok) {
                     alert('🎉 Xác thực thành công! Thiết bị của bạn đã mở khóa 1 phiên độc lập dài 20 phút.');
-                    localStorage.setItem('session_token_v89', data.session_token); // Lưu khóa phiên độc bản
+                    localStorage.setItem('session_token_v89', data.session_token); 
                     closeOtpModal();
                     executeCoreStreaming();
                     loadIncidentsDynamically();
@@ -405,14 +413,16 @@
             const checkNga = document.getElementById('chk-nga').checked;
             const checkBaoluc = document.getElementById('chk-baoluc').checked;
             const gateway = document.getElementById('alert-gateway').value;
-            const currentToken = localStorage.getItem('session_token_v89'); // Triệu hồi khóa phiên riêng biệt
+            const currentToken = localStorage.getItem('session_token_v89'); 
             
+            let receiver = document.getElementById('zalo-receiver').value.trim() || "Kiệt Tày";
+            let message = document.getElementById('zalo-message').value.trim() || "Phát hiện sự cố khẩn cấp!";
+
             document.getElementById('placeholder').style.display = 'none';
             document.getElementById('status-indicator').classList.add('active');
             
             const cleanUrl = serverUrl.replace(/\/$/, "");
-            // 🔥 ĐỒNG BỘ PARAMETER STREAM: Đính kèm session_token thay cho định danh thiết bị cũ
-            let streamUrl = `${cleanUrl}/video-feed?mode=${currentMode}&check_nga=${checkNga}&check_baoluc=${checkBaoluc}&alert_gateway=${gateway}&session_token=${currentToken || ''}&_t=${new Date().getTime()}`;
+            let streamUrl = `${cleanUrl}/video-feed?mode=${currentMode}&check_nga=${checkNga}&check_baoluc=${checkBaoluc}&name=${encodeURIComponent(receiver)}&msg=${encodeURIComponent(message)}&alert_gateway=${gateway}&session_token=${currentToken || ''}&_t=${new Date().getTime()}`;
             
             if (currentMode === 'demo') {
                 const clipPath = document.getElementById('clip-select').value;
